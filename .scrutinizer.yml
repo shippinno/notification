@@ -1,0 +1,28 @@
+build:
+  environment:
+    php:
+      version: 7.2
+  nodes:
+    analysis:
+      tests:
+        override:
+        - phpcs-run src
+    coverage:
+      tests:
+        override:
+        -
+          command: 'vendor/bin/phpunit --coverage-clover=build/coverage/log/coverage.xml'
+          coverage:
+            file: 'build/coverage/log/coverage.xml'
+            format: 'clover'
+
+checks:
+  php: true
+
+filter:
+  paths:
+  - src/
+  dependency_paths:
+  - vendor/
+  excluded_paths:
+  - tests/

@@ -1,0 +1,35 @@
+<?php
+
+namespace Shippinno\Notification\Infrastructure\Persistence\Doctrine\Type;
+
+use Doctrine\DBAL\Platforms\AbstractPlatform;
+use Doctrine\DBAL\Types\StringType;
+use Shippinno\Notification\Domain\Model\DeduplicationKey;
+
+class NotificationDeduplicationKeyType extends StringType
+{
+    /**
+     * {@inheritdoc}
+     */
+    public function convertToDatabaseValue($value, AbstractPlatform $platform)
+    {
+        /** @var DeduplicationKey|null $value */
+        return is_null($value) ? null : $value->key();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function convertToPHPValue($value, AbstractPlatform $platform)
+    {
+        return is_null($value) ? null : new DeduplicationKey($value);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+        return 'notification_deduplication_key';
+    }
+}

@@ -1,0 +1,23 @@
+{
+    "name": "shippinno/notification",
+    "type": "library",
+    "require": {
+        "shippinno/template": "^1.0",
+        "doctrine/orm": "^2.6",
+        "tanigami/value-objects": "^0.4.6",
+        "ramsey/uuid": "^3.8"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Shippinno\\Notification\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Shippinno\\Notification\\": "tests/"
+        }
+    }
+}
