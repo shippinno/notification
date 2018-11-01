@@ -1,38 +1,38 @@
 <?php
+declare(strict_types=1);
 
 namespace Shippinno\Notification\Domain\Model;
-
-use Ramsey\Uuid\Uuid;
 
 class NotificationId
 {
     /**
-     * @var string
+     * @var int
      */
     private $id;
 
     /**
-     * @param string $id
+     * @param int $id
      */
-    public function __construct(string $id)
+    public function __construct(int $id)
     {
         $this->id = $id;
     }
 
     /**
-     * @return NotificationId
+     * @return int
      */
-    public static function create(): NotificationId
+    public function id(): int
     {
-        return new self(Uuid::uuid4());
+        return $this->id;
     }
 
     /**
-     * @return string
+     * @param NotificationId $other
+     * @return bool
      */
-    public function id(): string
+    public function equals(NotificationId $other): bool
     {
-        return $this->id;
+        return $this->id() === $other->id();
     }
 
     /**
@@ -40,7 +40,6 @@ class NotificationId
      */
     public function __toString(): string
     {
-        return $this->id();
+        return strval($this->id());
     }
 }
-

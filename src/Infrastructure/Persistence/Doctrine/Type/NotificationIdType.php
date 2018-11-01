@@ -1,12 +1,13 @@
 <?php
+declare(strict_types=1);
 
 namespace Shippinno\Notification\Infrastructure\Persistence\Doctrine\Type;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
-use Doctrine\DBAL\Types\GuidType;
+use Doctrine\DBAL\Types\IntegerType;
 use Shippinno\Notification\Domain\Model\NotificationId;
 
-class NotificationIdType extends GuidType
+class NotificationIdType extends IntegerType
 {
     /**
      * {@inheritdoc}
@@ -22,7 +23,7 @@ class NotificationIdType extends GuidType
      */
     public function convertToPHPValue($value, AbstractPlatform $platform)
     {
-        return new NotificationId($value);
+        return new NotificationId((int) $value);
     }
 
     /**

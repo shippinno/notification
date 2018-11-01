@@ -9,7 +9,7 @@ use LogicException;
 class Notification
 {
     /**
-     * @var NotificationId
+     * @var null|NotificationId
      */
     protected $notificationId;
 
@@ -54,7 +54,6 @@ class Notification
     protected $sentAt;
 
     /**
-     * @param NotificationId $notificationId
      * @param Destination $destination
      * @param Subject $subject
      * @param Body $body
@@ -63,7 +62,6 @@ class Notification
      * @param array|null $templateVariables
      */
     public function __construct(
-        NotificationId $notificationId,
         Destination $destination,
         Subject $subject,
         Body $body,
@@ -71,7 +69,6 @@ class Notification
         string $templateName = null,
         array $templateVariables = null
     ) {
-        $this->notificationId = $notificationId;
         $this->destination = $destination;
         $this->subject = $subject;
         $this->body = $body;
@@ -83,9 +80,9 @@ class Notification
     }
 
     /**
-     * @return NotificationId
+     * @return null|NotificationId
      */
-    public function notificationId(): NotificationId
+    public function notificationId(): ?NotificationId
     {
         return $this->notificationId;
     }
@@ -147,9 +144,9 @@ class Notification
     }
 
     /**
-     * @return bool
+     * @return void
      */
-    public function markSent(): bool
+    public function markSent(): void
     {
         if ($this->isSent()) {
             throw new LogicException(sprintf('Notification is already sent: %s', $this->notificationId->id()));

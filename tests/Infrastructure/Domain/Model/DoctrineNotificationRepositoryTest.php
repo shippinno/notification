@@ -24,17 +24,23 @@ class DoctrineNotificationRepositoryTest extends TestCase
     /** @var PrecociousDoctrineNotificationRepository $repository */
     private $repository;
 
+    /** @var EntityManager $entityManager */
+    private $entityManager;
+
     public function setUp()
     {
+        $this->addCustomTypes();
+        $this->entityManager = $this->initEntityManager();
+        $this->initSchema($this->entityManager);
         $this->repository = $this->createRepository();
     }
 
     private function createRepository()
     {
-        $this->addCustomTypes();
-        $em = $this->initEntityManager();
-        $this->initSchema($em);
-        return new PrecociousDoctrineNotificationRepository($em, $em->getClassMetaData(Notification::class));
+        return new PrecociousDoctrineNotificationRepository(
+            $this->entityManager,
+            $this->entityManager->getClassMetaData(Notification::class)
+        );
     }
 
     private function addCustomTypes()
@@ -74,7 +80,6 @@ class DoctrineNotificationRepositoryTest extends TestCase
     public function testItHasNotificationAfterAdded()
     {
         $notification = new Notification(
-            NotificationId::create(),
             new EmailDestination(
                 [new EmailAddress('to1@example.com'), new EmailAddress('to2@example.com')],
                 [new EmailAddress('cc1@example.com'), new EmailAddress('cc2@example.com')],
@@ -85,7 +90,7 @@ class DoctrineNotificationRepositoryTest extends TestCase
             new DeduplicationKey('DEDUPLICATION_KEY')
         );
         $this->repository->add($notification);
-        $this->assertNotNull($this->repository->notificationOfId($notification->notificationId()));
+        $this->assertCount(1, $this->repository->unsentNotifications());
     }
 
     /**
@@ -96,14 +101,12 @@ class DoctrineNotificationRepositoryTest extends TestCase
     {
         $deduplicationKey = new DeduplicationKey('DEDUPLICATION_KEY');
         $notification1 = new Notification(
-            NotificationId::create(),
             new EmailDestination([new EmailAddress('to@example.com')]),
             new Subject('SUBJECT'),
             new Body('BODY'),
             $deduplicationKey
         );
         $notification2 = new Notification(
-            NotificationId::create(),
             new EmailDestination([new EmailAddress('to@example.com')]),
             new Subject('SUBJECT'),
             new Body('BODY'),
@@ -112,6 +115,34 @@ class DoctrineNotificationRepositoryTest extends TestCase
         $this->repository->add($notification1);
         $this->assertTrue($this->repository->hasNotificationOfDeduplicationKey($deduplicationKey));
         $this->repository->add($notification2);
+    }
+
+    public function testItReturnsUnsentNotificationsOrderedById()
+    {
+        $notification1 = new Notification(
+            new EmailDestination([new EmailAddress('to@example.com')]),
+            new Subject('SUBJECT'),
+            new Body('BODY')
+        );
+        $notification2 = new Notification(
+            new EmailDestination([new EmailAddress('to@example.com')]),
+            new Subject('SUBJECT'),
+            new Body('BODY')
+        );
+        $notification3 = new Notification(
+            new EmailDestination([new EmailAddress('to@example.com')]),
+            new Subject('SUBJECT'),
+            new Body('BODY')
+        );
+        $this->repository->add($notification1);
+        $this->repository->add($notification2);
+        $this->repository->add($notification3);
+        $notification1->markSent();
+        $this->entityManager->flush();
+        $unsentNotifications = $this->repository->unsentNotifications();
+        $this->assertCount(2, $unsentNotifications);
+        $this->assertSame(2, $unsentNotifications[0]->notificationId()->id());
+        $this->assertSame(3, $unsentNotifications[1]->notificationId()->id());
     }
 }
 

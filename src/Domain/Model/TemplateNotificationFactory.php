@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Shippinno\Notification\Domain\Model;
 
@@ -58,7 +59,6 @@ class TemplateNotificationFactory
         );
 
         return new Notification(
-            NotificationId::create(),
             $destination,
             new Subject($subject),
             new Body($body),

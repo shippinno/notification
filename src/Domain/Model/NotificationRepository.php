@@ -6,10 +6,9 @@ namespace Shippinno\Notification\Domain\Model;
 interface NotificationRepository
 {
     /**
-     * @param NotificationId $notificationId
-     * @return null|Notification
+     * @param Notification $notification
      */
-    public function notificationOfId(NotificationId $notificationId): ?Notification;
+    public function add(Notification $notification): void;
 
     /**
      * @param DeduplicationKey $deduplicationKey
@@ -18,7 +17,7 @@ interface NotificationRepository
     public function hasNotificationOfDeduplicationKey(DeduplicationKey $deduplicationKey): bool;
 
     /**
-     * @param Notification $notification
+     * @return Notification[]
      */
-    public function add(Notification $notification): void;
+    public function unsentNotifications(): array;
 }

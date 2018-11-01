@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Shippinno\Notification\Infrastructure\Domain\Model;
 
@@ -14,9 +15,18 @@ class DoctrineNotificationRepository extends EntityRepository implements Notific
     /**
      * {@inheritdoc}
      */
-    public function notificationOfId(NotificationId $notificationId): ?Notification
+    public function add(Notification $notification): void
     {
-        return $this->find($notificationId);
+        $deduplicationKey = $notification->deduplicationKey();
+        if (!is_null($deduplicationKey) && $this->hasNotificationOfDeduplicationKey($deduplicationKey)) {
+            throw new LogicException(
+                sprintf(
+                    'Notification of deduplication key (%s) already exists.',
+                    $deduplicationKey
+                )
+            );
+        }
+        $this->getEntityManager()->persist($notification);
     }
 
     /**
@@ -30,12 +40,12 @@ class DoctrineNotificationRepository extends EntityRepository implements Notific
     /**
      * {@inheritdoc}
      */
-    public function add(Notification $notification): void
+    public function unsentNotifications(): array
     {
-        $deduplicationKey = $notification->deduplicationKey();
-        if ($this->hasNotificationOfDeduplicationKey($deduplicationKey)) {
-            throw new LogicException(sprintf('Notification of deduplication key (%s) already exists.', $deduplicationKey));
-        }
-        $this->getEntityManager()->persist($notification);
+        return $this->createQueryBuilder('n')
+            ->where('n.sentAt IS NULL')
+            ->orderBy('n.notificationId', 'ASC')
+            ->getQuery()
+            ->getResult();
     }
 }
