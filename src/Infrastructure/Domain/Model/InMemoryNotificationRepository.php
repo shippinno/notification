@@ -3,15 +3,20 @@ declare(strict_types=1);
 
 namespace Shippinno\Notification\Infrastructure\Domain\Model;
 
-use Doctrine\ORM\EntityRepository;
-use LogicException;
 use Shippinno\Notification\Domain\Model\DeduplicationKey;
 use Shippinno\Notification\Domain\Model\Notification;
 use Shippinno\Notification\Domain\Model\NotificationId;
 use Shippinno\Notification\Domain\Model\NotificationRepository;
 
-class DoctrineNotificationRepository extends EntityRepository implements NotificationRepository
+class InMemoryNotificationRepository implements NotificationRepository
 {
+    /**
+     * @var Notification[]
+     */
+    private $notifications = [];
+
+    private $nextIdentity = 1;
+
     /**
      * {@inheritdoc}
      */
@@ -19,14 +24,9 @@ class DoctrineNotificationRepository extends EntityRepository implements Notific
     {
         $deduplicationKey = $notification->deduplicationKey();
         if (!is_null($deduplicationKey) && $this->hasNotificationOfDeduplicationKey($deduplicationKey)) {
-            throw new LogicException(
-                sprintf(
-                    'Notification of deduplication key (%s) already exists.',
-                    $deduplicationKey
-                )
-            );
+            return;
         }
-        $this->getEntityManager()->persist($notification);
+        $this->notifications[$this->nextIdentity()->id()] = $notification;
     }
 
     /**
@@ -34,7 +34,11 @@ class DoctrineNotificationRepository extends EntityRepository implements Notific
      */
     public function notificationOfId(NotificationId $notificationId): ?Notification
     {
-        return $this->find($notificationId);
+        if (!isset($this->notifications[$notificationId->id()])) {
+            return null;
+        }
+
+        return $this->notifications[$notificationId->id()];
     }
 
     /**
@@ -42,7 +46,11 @@ class DoctrineNotificationRepository extends EntityRepository implements Notific
      */
     public function hasNotificationOfDeduplicationKey(DeduplicationKey $deduplicationKey): bool
     {
-        return !is_null($this->findOneBy(['deduplicationKey' => $deduplicationKey]));
+        foreach ($this->notifications as $notification) {
+            if ($notification->deduplicationKey()->equals($deduplicationKey)) {
+                return true;
+            }
+        }
     }
 
     /**
@@ -50,10 +58,16 @@ class DoctrineNotificationRepository extends EntityRepository implements Notific
      */
     public function unsentNotifications(): array
     {
-        return $this->createQueryBuilder('n')
-            ->where('n.sentAt IS NULL')
-            ->orderBy('n.notificationId', 'ASC')
-            ->getQuery()
-            ->getResult();
+        return array_filter($this->notifications, function (Notification $notification) {
+            return !$notification->isSent();
+        });
+    }
+
+    /**
+     * @return NotificationId
+     */
+    private function nextIdentity(): NotificationId
+    {
+        return new NotificationId($this->nextIdentity++);
     }
 }

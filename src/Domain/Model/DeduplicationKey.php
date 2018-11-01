@@ -27,6 +27,15 @@ class DeduplicationKey
     }
 
     /**
+     * @param DeduplicationKey $other
+     * @return bool
+     */
+    public function equals(DeduplicationKey $other): bool
+    {
+        return $this->key() === $other->key();
+    }
+
+    /**
      * @return string
      */
     public function __toString(): string

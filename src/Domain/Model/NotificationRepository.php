@@ -11,6 +11,12 @@ interface NotificationRepository
     public function add(Notification $notification): void;
 
     /**
+     * @param NotificationId $notificationId
+     * @return null|Notification
+     */
+    public function notificationOfId(NotificationId $notificationId): ?Notification;
+
+    /**
      * @param DeduplicationKey $deduplicationKey
      * @return bool
      */
