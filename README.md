@@ -42,3 +42,5 @@ $notification = $factory->createFromTemplate(
 $notification->subject()->subject(); // => 'Hello Shippinno !!'
 $notification->body()->body(); // => 'Good bye Jessica :)'
 ```
+
+## Persisting notifications
