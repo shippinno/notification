@@ -3,16 +3,37 @@ declare(strict_types=1);
 
 namespace Shippinno\Notification\Domain\Model;
 
-interface Gateway
+use InvalidArgumentException;
+
+abstract class Gateway
 {
     /**
-     * @return string
+     * @param Notification $notification
+     * @throws NotificationNotSentException
      */
-    public function destinationType(): string;
+    public function send(Notification $notification): void
+    {
+        $destinationType = $notification->destination()->destinationType();
+        if ($destinationType !== $this->destinationType()) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Invalid destination type: %s, expected: %s',
+                    $destinationType,
+                    $this->destinationType()
+                )
+            );
+        }
+        $this->doSend($notification);
+    }
 
     /**
      * @param Notification $notification
-     * @return mixed
+     * @throws NotificationNotSentException
      */
-    public function send(Notification $notification);
+    abstract protected function doSend(Notification $notification): void;
+
+    /**
+     * @return string
+     */
+    abstract public function destinationType(): string;
 }

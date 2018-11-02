@@ -6,6 +6,7 @@ namespace Shippinno\Notification\Application\Command;
 use Shippinno\Notification\Domain\Model\GatewayRegistry;
 use Shippinno\Notification\Domain\Model\NotificationId;
 use Shippinno\Notification\Domain\Model\NotificationNotFoundException;
+use Shippinno\Notification\Domain\Model\NotificationNotSentException;
 use Shippinno\Notification\Domain\Model\NotificationRepository;
 
 class SendNotificationHandler
@@ -35,6 +36,7 @@ class SendNotificationHandler
     /**
      * @param SendNotification $command
      * @throws NotificationNotFoundException
+     * @throws NotificationNotSentException
      */
     public function handle(SendNotification $command): void
     {
@@ -43,7 +45,8 @@ class SendNotificationHandler
         if (is_null($notification)) {
             throw new NotificationNotFoundException($notificationId);
         }
-        $this->gatewayRegistry->get($notification->destination())->send($notification);
+        $gateway = $this->gatewayRegistry->get($notification->destination());
+        $gateway->send($notification);
         $notification->markSent();
     }
 }

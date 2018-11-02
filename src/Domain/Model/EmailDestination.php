@@ -79,4 +79,12 @@ class EmailDestination implements Destination
             return new EmailAddress($emailAddress);
         }, $emailAddresses);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function destinationType(): string
+    {
+        return get_class($this);
+    }
 }

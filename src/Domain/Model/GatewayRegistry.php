@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Shippinno\Notification\Domain\Model;
 
 use InvalidArgumentException;
-use Verraes\ClassFunctions\ClassFunctions;
 
 class GatewayRegistry
 {
@@ -27,8 +26,8 @@ class GatewayRegistry
      */
     public function get(Destination $destination): Gateway
     {
-        $destinationType = ClassFunctions::short($destination);
-        if (isset($this->gateways[$destinationType])) {
+        $destinationType = $destination->destinationType();
+        if (!isset($this->gateways[$destinationType])) {
             new InvalidArgumentException(
                 sprintf(
                     'No gateway for destination type (%s) is supported.',

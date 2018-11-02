@@ -16,7 +16,7 @@ use Shippinno\Notification\Domain\Model\Subject;
 use Shippinno\Notification\Infrastructure\Domain\Model\InMemoryNotificationRepository;
 use Tanigami\ValueObjects\Web\EmailAddress;
 
-class SendNotificationCommandTest extends TestCase
+class SendNotificationHandlerTest extends TestCase
 {
     use MockeryPHPUnitIntegration;
 
@@ -34,10 +34,7 @@ class SendNotificationCommandTest extends TestCase
 
     public function setUp()
     {
-        $this->gateway = Mockery::spy(Gateway::class);
-        $this->gateway->shouldReceive(['destinationType' => 'EmailDestination']);
         $this->gatewayRegistry = new GatewayRegistry;
-        $this->gatewayRegistry->set($this->gateway);
         $this->notificationRepository = new InMemoryNotificationRepository;
         $this->handler = new SendNotificationHandler(
             $this->notificationRepository,
@@ -53,6 +50,9 @@ class SendNotificationCommandTest extends TestCase
             new Body('body')
         );
         $this->notificationRepository->add($notification);
+        $gateway = Mockery::spy(Gateway::class);
+        $gateway->shouldReceive(['destinationType' => $notification->destination()->destinationType()]);
+        $this->gatewayRegistry->set($gateway);
         $this->handler->handle(new SendNotification(1));
         $this->assertTrue($notification->isSent());
     }

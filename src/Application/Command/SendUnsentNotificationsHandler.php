@@ -3,6 +3,7 @@
 namespace Shippinno\Notification\Application\Command;
 
 use Shippinno\Notification\Domain\Model\GatewayRegistry;
+use Shippinno\Notification\Domain\Model\NotificationNotSentException;
 use Shippinno\Notification\Domain\Model\NotificationRepository;
 
 class SendUnsentNotificationsHandler
@@ -31,12 +32,14 @@ class SendUnsentNotificationsHandler
 
     /**
      * @param SendUnsentNotifications $command
+     * @throws NotificationNotSentException
      */
     public function handle(SendUnsentNotifications $command): void
     {
         $notifications = $this->notificationRepository->unsentNotifications();
         foreach ($notifications as $notification) {
-            $this->gatewayRegistry->get($notification->destination())->send($notification);
+            $gateway = $this->gatewayRegistry->get($notification->destination());
+            $gateway->send($notification);
             $notification->markSent();
         }
     }

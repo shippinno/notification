@@ -5,4 +5,8 @@ namespace Shippinno\Notification\Domain\Model;
 
 interface Destination
 {
+    /**
+     * @return string
+     */
+    public function destinationType(): string;
 }
