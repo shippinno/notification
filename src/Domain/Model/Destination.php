@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace Shippinno\Notification\Domain\Model;
 
-interface Destination
+abstract class Destination
 {
     /**
      * @return string
      */
-    public function destinationType(): string;
+    abstract public function destinationType(): string;
 }

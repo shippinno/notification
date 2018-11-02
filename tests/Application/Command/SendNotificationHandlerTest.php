@@ -10,7 +10,6 @@ use Shippinno\Notification\Domain\Model\EmailDestination;
 use Shippinno\Notification\Domain\Model\Gateway;
 use Shippinno\Notification\Domain\Model\GatewayRegistry;
 use Shippinno\Notification\Domain\Model\Notification;
-use Shippinno\Notification\Domain\Model\NotificationId;
 use Shippinno\Notification\Domain\Model\NotificationRepository;
 use Shippinno\Notification\Domain\Model\Subject;
 use Shippinno\Notification\Infrastructure\Domain\Model\InMemoryNotificationRepository;

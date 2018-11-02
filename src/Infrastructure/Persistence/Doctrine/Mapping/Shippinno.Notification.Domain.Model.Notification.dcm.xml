@@ -12,5 +12,8 @@
         <field name="templateVariables" column="template_variables" nullable="true"/>
         <field name="createdAt" column="created_at" type="datetime_immutable"/>
         <field name="sentAt" column="sent_at" type="datetime_immutable" nullable="true"/>
+        <field name="failedAt" column="failed_at" type="datetime_immutable" nullable="true"/>
+        <field name="failedFor" column="failed_for" type="text" nullable="true"/>
+        <embedded name="destination" class="Shippinno\Notification\Domain\Model\Destination"/>
     </entity>
 </doctrine-mapping>

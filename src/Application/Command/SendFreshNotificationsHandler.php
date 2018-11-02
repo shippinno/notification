@@ -3,12 +3,10 @@ declare(strict_types=1);
 
 namespace Shippinno\Notification\Application\Command;
 
-use Shippinno\Notification\Domain\Model\NotificationId;
-use Shippinno\Notification\Domain\Model\NotificationNotFoundException;
 use Shippinno\Notification\Domain\Model\NotificationRepository;
 use Shippinno\Notification\Domain\Model\SendNotification as SendNotificationService;
 
-class SendNotificationHandler
+class SendFreshNotificationsHandler
 {
     /**
      * @var NotificationRepository
@@ -33,16 +31,13 @@ class SendNotificationHandler
     }
 
     /**
-     * @param SendNotification $command
-     * @throws NotificationNotFoundException
+     * @param SendFreshNotifications $command
      */
-    public function handle(SendNotification $command): void
+    public function handle(SendFreshNotifications $command): void
     {
-        $notificationId = new NotificationId($command->notificationId());
-        $notification = $this->notificationRepository->notificationOfId($notificationId);
-        if (is_null($notification)) {
-            throw new NotificationNotFoundException($notificationId);
+        $notifications = $this->notificationRepository->unsentNotifications();
+        foreach ($notifications as $notification) {
+            $this->sendNotificationService->execute($notification);
         }
-        $this->sendNotificationService->execute($notification);
     }
 }

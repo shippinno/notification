@@ -1,8 +1,8 @@
 <?php
+declare(strict_types=1);
 
 namespace Shippinno\Notification\Infrastructure\Domain\Model;
 
-use InvalidArgumentException;
 use Shippinno\Email\EmailNotSentException;
 use Shippinno\Email\SendEmail;
 use Shippinno\Notification\Domain\Model\EmailDestination;

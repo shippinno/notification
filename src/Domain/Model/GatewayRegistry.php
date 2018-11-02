@@ -28,7 +28,7 @@ class GatewayRegistry
     {
         $destinationType = $destination->destinationType();
         if (!isset($this->gateways[$destinationType])) {
-            new InvalidArgumentException(
+            throw new InvalidArgumentException(
                 sprintf(
                     'No gateway for destination type (%s) is supported.',
                     $destinationType

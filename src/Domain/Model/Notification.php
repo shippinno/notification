@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Shippinno\Notification\Domain\Model;
 
+use DateTime;
 use DateTimeImmutable;
 use LogicException;
 
@@ -54,6 +55,16 @@ class Notification
     protected $sentAt;
 
     /**
+     * @var null|DateTimeImmutable
+     */
+    protected $failedAt;
+
+    /**
+     * @var null|string
+     */
+    protected $failedFor;
+
+    /**
      * @param Destination $destination
      * @param Subject $subject
      * @param Body $body
@@ -77,6 +88,8 @@ class Notification
         $this->templateVariables = $templateVariables;
         $this->createdAt = new DateTimeImmutable;
         $this->sentAt = null;
+        $this->failedAt = null;
+        $this->failedFor = null;
     }
 
     /**
@@ -148,11 +161,76 @@ class Notification
      */
     public function markSent(): void
     {
-        if ($this->isSent()) {
-            throw new LogicException(sprintf('Notification is already sent: %s', $this->notificationId->id()));
-        }
+        $this->assertNotSent();
+        $this->unmarkFailed();
         $this->sentAt = new DateTimeImmutable;
     }
-}
 
+    /**
+     * @return DateTimeImmutable|null
+     */
+    public function failedAt(): ?DateTimeImmutable
+    {
+        return $this->failedAt;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function failedFor(): ?string
+    {
+        return $this->failedFor;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isFailed(): bool
+    {
+        return !is_null($this->failedAt());
+    }
+
+    /**
+     * @return void
+     */
+    public function markFailed(string $reason): void
+    {
+        $this->assertNotSent();
+        $this->failedAt = new DateTimeImmutable;
+        $this->failedFor = $reason;
+    }
+
+    /**
+     * @return void
+     */
+    public function unmarkFailed(): void
+    {
+        $this->failedAt = null;
+        $this->failedFor = null;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isFresh(): bool
+    {
+        return !$this->isSent() && !$this->isFailed();
+    }
+
+    /**
+     * @return void
+     */
+    private function assertNotSent(): void
+    {
+        if ($this->isSent()) {
+            throw new LogicException(
+                sprintf(
+                    'Notification is already sent: "%s" created at %s',
+                    $this->subject(),
+                    $this->createdAt()->format(DateTime::W3C)
+                )
+            );
+        }
+    }
+}
 

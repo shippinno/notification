@@ -5,7 +5,7 @@ namespace Shippinno\Notification\Domain\Model;
 
 use Tanigami\ValueObjects\Web\EmailAddress;
 
-class EmailDestination implements Destination
+class EmailDestination extends Destination
 {
     /**
      * @var string[]
