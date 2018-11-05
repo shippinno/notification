@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Shippinno\Notification\Infrastructure\Domain\Model;
 
 use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\Mapping;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
@@ -82,8 +81,9 @@ class DoctrineNotificationRepository extends EntityRepository implements Notific
      */
     public function freshNotifications(): array
     {
-        return $this->createQueryBuilder('n')
+        $candidates = $this->createQueryBuilder('n')
             ->where('n.sentAt IS NULL')
+            ->andWhere('n.failedAt IS NULL')
             ->orderBy('n.notificationId', 'ASC')
             ->getQuery()
             ->getResult();

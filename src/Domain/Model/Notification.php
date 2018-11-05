@@ -191,7 +191,7 @@ class Notification
     }
 
     /**
-     * @return void
+     * @param string $reason
      */
     public function markFailed(string $reason): void
     {
