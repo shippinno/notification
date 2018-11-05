@@ -48,12 +48,12 @@ class EmailGatewayTest extends TestCase
 
     /**
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Invalid destination type: INVALID_TYPE, expected: Shippinno\Notification\Domain\Model\EmailDestination
+     * @expectedExceptionMessage Invalid destination type: INVALID_TYPE
      */
     public function testItThrowsExceptionIfDestinationTypeIsInvalid()
     {
         $destination = Mockery::mock(Destination::class);
-        $destination->shouldReceive(['destinationType' => 'INVALID_TYPE']);
+        $destination->shouldReceive(['type' => 'INVALID_TYPE']);
         $notification = new Notification($destination, new Subject('subject'), new Body('body'));
         $gateway = new EmailGateway(
             Mockery::mock(SendEmail::class),

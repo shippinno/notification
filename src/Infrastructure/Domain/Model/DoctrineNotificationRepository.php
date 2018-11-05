@@ -81,7 +81,7 @@ class DoctrineNotificationRepository extends EntityRepository implements Notific
      */
     public function freshNotifications(): array
     {
-        $candidates = $this->createQueryBuilder('n')
+        return $this->createQueryBuilder('n')
             ->where('n.sentAt IS NULL')
             ->andWhere('n.failedAt IS NULL')
             ->orderBy('n.notificationId', 'ASC')

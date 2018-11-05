@@ -10,12 +10,15 @@ abstract class Destination
     /**
      * @return string
      */
-    abstract public function destinationType(): string;
+    abstract public function jsonRepresentation(): string;
 
     /**
      * @return string
      */
-    abstract public function jsonRepresentation(): string;
+    public static function type(): string
+    {
+        return ClassFunctions::short(static::class);
+    }
 
     /**
      * @return string
@@ -23,7 +26,7 @@ abstract class Destination
     public function typedJsonRepresentation(): string
     {
         $decoded = json_decode($this->jsonRepresentation(), true);
-        $decoded['type'] = ClassFunctions::short($this);
+        $decoded['type'] = self::type();
 
         return json_encode($decoded);
     }

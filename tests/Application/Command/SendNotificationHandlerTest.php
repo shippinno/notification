@@ -49,8 +49,7 @@ class SendNotificationHandlerTest extends TestCase
         );
         $this->notificationRepository->add($notification);
         $gateway = Mockery::spy(Gateway::class);
-        $gateway->shouldReceive(['destinationType' => $notification->destination()->destinationType()]);
-        $this->gatewayRegistry->set($gateway);
+        $this->gatewayRegistry->set($notification->destination()::type(), $gateway);
         $this->handler->handle(new SendNotification($notification->notificationId()->id()));
         $gateway
             ->shouldHaveReceived('send')

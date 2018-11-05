@@ -32,9 +32,17 @@ class DestinationRegistry
      * @param string $name
      * @param Destination $destination
      */
-    public function set(string $name, Destination $destination)
+    public function set(string $name, Destination $destination): void
     {
         $this->destinations[$name] = $destination;
+    }
+
+    /**
+     * @param array $destinations
+     */
+    public function setAll(array $destinations): void
+    {
+        $this->destinations = $destinations;
     }
 
     /**

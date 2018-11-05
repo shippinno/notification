@@ -13,13 +13,12 @@ abstract class Gateway
      */
     public function send(Notification $notification): void
     {
-        $destinationType = $notification->destination()->destinationType();
-        if ($destinationType !== $this->destinationType()) {
+        $destination = $notification->destination();
+        if (!$this->sendsToDestination($destination)) {
             throw new InvalidArgumentException(
                 sprintf(
-                    'Invalid destination type: %s, expected: %s',
-                    $destinationType,
-                    $this->destinationType()
+                    'Invalid destination type: %s',
+                    $destination::type()
                 )
             );
         }
@@ -33,7 +32,8 @@ abstract class Gateway
     abstract protected function doSend(Notification $notification): void;
 
     /**
-     * @return string
+     * @param Destination $destination
+     * @return bool
      */
-    abstract public function destinationType(): string;
+    abstract public function sendsToDestination(Destination $destination): bool;
 }

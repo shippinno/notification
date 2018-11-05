@@ -81,14 +81,6 @@ class EmailDestination extends Destination
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function destinationType(): string
-    {
-        return get_class($this);
-    }
-
-    /**
      * @return string
      */
     public function jsonRepresentation(): string

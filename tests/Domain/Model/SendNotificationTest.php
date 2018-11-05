@@ -16,9 +16,8 @@ class SendNotificationTest extends TestCase
             new Body('body')
         );
         $gateway = Mockery::spy(Gateway::class);
-        $gateway->shouldReceive(['destinationType' => $notification->destination()->destinationType()]);
         $gatewayRegistry = new GatewayRegistry;
-        $gatewayRegistry->set($gateway);
+        $gatewayRegistry->set($notification->destination()::type(), $gateway);
         $service = new SendNotification($gatewayRegistry);
         $service->execute($notification);
         $gateway->shouldHaveReceived('send')->once();
@@ -49,10 +48,10 @@ class SendNotificationTest extends TestCase
         $exception = new NotificationNotSentException($notification);
         $gateway = Mockery::mock(Gateway::class);
         $gateway
-            ->shouldReceive(['destinationType' => $notification->destination()->destinationType()])
+            ->shouldReceive(['destinationType' => $notification->destination()::type()])
             ->shouldReceive('send')->andThrow($exception);
         $gatewayRegistry = new GatewayRegistry;
-        $gatewayRegistry->set($gateway);
+        $gatewayRegistry->set($notification->destination()::type(), $gateway);
         $service = new SendNotification($gatewayRegistry);
         $service->execute($notification);
         $this->assertTrue($notification->isFailed());

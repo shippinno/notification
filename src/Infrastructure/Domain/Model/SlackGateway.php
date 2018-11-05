@@ -5,6 +5,7 @@ namespace Shippinno\Notification\Infrastructure\Domain\Model;
 
 use Maknz\Slack\Client;
 use Maknz\Slack\Message;
+use Shippinno\Notification\Domain\Model\Destination;
 use Shippinno\Notification\Domain\Model\Gateway;
 use Shippinno\Notification\Domain\Model\Notification;
 use Shippinno\Notification\Domain\Model\NotificationNotSentException;
@@ -38,7 +39,9 @@ class SlackGateway extends Gateway
         $message = new Message($this->client);
         $message->setAllowMarkdown(true);
         $message->setText($text);
-        $message->setChannel($destination->channel());
+        if ($destination instanceof SlackChannelDestination) {
+            $message->setChannel($destination->channel());
+        }
         try {
             $message->send();
         } catch (Throwable $e) {
@@ -47,10 +50,10 @@ class SlackGateway extends Gateway
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
-    public function destinationType(): string
+    public function sendsToDestination(Destination $destination): bool
     {
-        return SlackChannelDestination::class;
+        return $destination instanceof SlackChannelDestination;
     }
 }

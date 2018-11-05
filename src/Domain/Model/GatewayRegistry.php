@@ -30,11 +30,20 @@ class GatewayRegistry
     }
 
     /**
+     * @param string $destinationType
      * @param Gateway $gateway
      */
-    public function set(Gateway $gateway)
+    public function set(string $destinationType, Gateway $gateway): void
     {
-        $this->gateways[$gateway->destinationType()] = $gateway;
+        $this->gateways[$destinationType] = $gateway;
+    }
+
+    /**
+     * @param array $gateways
+     */
+    public function setAll(array $gateways): void
+    {
+        $this->gateways = $gateways;
     }
 
     /**
@@ -43,7 +52,7 @@ class GatewayRegistry
      */
     public function get(Destination $destination): Gateway
     {
-        $destinationType = $destination->destinationType();
+        $destinationType = $destination::type();
         if (!isset($this->gateways[$destinationType])) {
             throw new InvalidArgumentException(
                 sprintf(
