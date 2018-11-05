@@ -8,9 +8,26 @@ use InvalidArgumentException;
 class GatewayRegistry
 {
     /**
+     * @var null|GatewayRegistry
+     */
+    private static $instance = null;
+
+    /**
      * @var Gateway[]
      */
     protected $gateways = [];
+
+    /**
+     * @return GatewayRegistry
+     */
+    public static function instance(): GatewayRegistry
+    {
+        if (null === static::$instance) {
+            static::$instance = new GatewayRegistry;
+        }
+
+        return static::$instance;
+    }
 
     /**
      * @param Gateway $gateway
