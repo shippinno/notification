@@ -26,8 +26,35 @@ class InMemoryNotificationRepository implements NotificationRepository
         if (!is_null($deduplicationKey) && $this->hasNotificationOfDeduplicationKey($deduplicationKey)) {
             return;
         }
+        $this->setNotification($notification);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function markSent(Notification $notification): void
+    {
+        $notification->markSent();
+        $this->setNotification($notification);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function markFailed(Notification $notification, string $reason): void
+    {
+        $notification->markFailed($reason);
+        $this->setNotification($notification);
+    }
+
+    /**
+     * @param Notification $notification
+     */
+    private function setNotification(Notification $notification): void
+    {
         $this->notifications[$this->nextIdentity()->id()] = $notification;
     }
+
 
     /**
      * {@inheritdoc}

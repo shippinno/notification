@@ -11,6 +11,17 @@ interface NotificationRepository
     public function add(Notification $notification): void;
 
     /**
+     * @param Notification $notification
+     */
+    public function markSent(Notification $notification): void;
+
+    /**
+     * @param Notification $notification
+     * @param string $reason
+     */
+    public function markFailed(Notification $notification, string $reason): void;
+
+    /**
      * @param NotificationId $notificationId
      * @return null|Notification
      */

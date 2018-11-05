@@ -4,6 +4,9 @@ declare(strict_types=1);
 namespace Shippinno\Notification\Infrastructure\Domain\Model;
 
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Mapping;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use LogicException;
 use Shippinno\Notification\Domain\Model\DeduplicationKey;
 use Shippinno\Notification\Domain\Model\Notification;
@@ -13,9 +16,24 @@ use Shippinno\Notification\Domain\Model\NotificationRepository;
 class DoctrineNotificationRepository extends EntityRepository implements NotificationRepository
 {
     /**
+     * @var bool
+     */
+    private $isPrecocious;
+
+    /**
+     * @param $em
+     * @param Mapping\ClassMetadata $class
+     */
+    public function __construct($em, Mapping\ClassMetadata $class, bool $isPrecocious)
+    {
+        $this->isPrecocious = $isPrecocious;
+        parent::__construct($em, $class);
+    }
+
+    /**
      * {@inheritdoc}
      */
-    public function add(Notification $notification): void
+    public function add(Notification $notification, bool $precocious = false): void
     {
         $deduplicationKey = $notification->deduplicationKey();
         if (!is_null($deduplicationKey) && $this->hasNotificationOfDeduplicationKey($deduplicationKey)) {
@@ -26,7 +44,42 @@ class DoctrineNotificationRepository extends EntityRepository implements Notific
                 )
             );
         }
+        $this->persist($notification);
+    }
+
+    /**
+     * {@inheritdoc}
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    public function markSent(Notification $notification): void
+    {
+        $notification->markSent();
+        $this->persist($notification);
+    }
+
+    /**
+     * {@inheritdoc}
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    public function markFailed(Notification $notification, string $reason): void
+    {
+        $notification->markFailed($reason);
+        $this->persist($notification);
+    }
+
+    /**
+     * @param Notification $notification
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    private function persist(Notification $notification): void
+    {
         $this->getEntityManager()->persist($notification);
+        if ($this->isPrecocious) {
+            $this->getEntityManager()->flush();
+        }
     }
 
     /**

@@ -21,7 +21,7 @@ use Tanigami\ValueObjects\Web\EmailAddress;
 
 class DoctrineNotificationRepositoryTest extends TestCase
 {
-    /** @var PrecociousDoctrineNotificationRepository $repository */
+    /** @var DoctrineNotificationRepository $repository */
     private $repository;
 
     /** @var EntityManager $entityManager */
@@ -37,9 +37,10 @@ class DoctrineNotificationRepositoryTest extends TestCase
 
     private function createRepository()
     {
-        return new PrecociousDoctrineNotificationRepository(
+        return new DoctrineNotificationRepository(
             $this->entityManager,
-            $this->entityManager->getClassMetaData(Notification::class)
+            $this->entityManager->getClassMetaData(Notification::class),
+            true
         );
     }
 
@@ -137,20 +138,10 @@ class DoctrineNotificationRepositoryTest extends TestCase
         $this->repository->add($notification1);
         $this->repository->add($notification2);
         $this->repository->add($notification3);
-        $notification1->markSent();
-        $this->entityManager->flush();
+        $this->repository->markSent($notification1);
         $unsentNotifications = $this->repository->unsentNotifications();
         $this->assertCount(2, $unsentNotifications);
         $this->assertSame(2, $unsentNotifications[0]->notificationId()->id());
         $this->assertSame(3, $unsentNotifications[1]->notificationId()->id());
-    }
-}
-
-class PrecociousDoctrineNotificationRepository extends DoctrineNotificationRepository
-{
-    public function add(Notification $notification): void
-    {
-        parent::add($notification);
-        $this->getEntityManager()->flush();
     }
 }
