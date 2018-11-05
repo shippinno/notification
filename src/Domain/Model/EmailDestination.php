@@ -29,9 +29,9 @@ class EmailDestination extends Destination
      */
     public function __construct(array $to, array $cc = [], array $bcc = [])
     {
-        $this->to = $this->toStringArray($to);
-        $this->cc = $this->toStringArray($cc);
-        $this->bcc = $this->toStringArray($bcc);
+        $this->to = self::toStringArray($to);
+        $this->cc = self::toStringArray($cc);
+        $this->bcc = self::toStringArray($bcc);
     }
 
     /**
@@ -39,7 +39,7 @@ class EmailDestination extends Destination
      */
     public function to(): array
     {
-        return $this->toObjectArray($this->to);
+        return self::toObjectArray($this->to);
     }
 
     /**
@@ -47,7 +47,7 @@ class EmailDestination extends Destination
      */
     public function cc(): array
     {
-        return $this->toObjectArray($this->cc);
+        return self::toObjectArray($this->cc);
     }
 
     /**
@@ -55,14 +55,14 @@ class EmailDestination extends Destination
      */
     public function bcc(): array
     {
-        return $this->toObjectArray($this->bcc);
+        return self::toObjectArray($this->bcc);
     }
 
     /**
      * @param EmailAddress[] $emailAddresses
      * @return string[[
      */
-    private function toStringArray(array $emailAddresses)
+    private static function toStringArray(array $emailAddresses)
     {
         return array_map(function (EmailAddress $emailAddress) {
             return $emailAddress->emailAddress();
@@ -73,7 +73,7 @@ class EmailDestination extends Destination
      * @param string[] $emailAddresses
      * @return EmailAddress[]
      */
-    private function toObjectArray(array $emailAddresses): array
+    private static function toObjectArray(array $emailAddresses): array
     {
         return array_map(function (string $emailAddress) {
             return new EmailAddress($emailAddress);
@@ -86,5 +86,31 @@ class EmailDestination extends Destination
     public function destinationType(): string
     {
         return get_class($this);
+    }
+
+    /**
+     * @return string
+     */
+    public function jsonRepresentation(): string
+    {
+        return json_encode([
+            'to' => $this->to,
+            'cc' => $this->cc,
+            'bcc' => $this->bcc,
+        ]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function fromJsonRepresentation(string $jsonRepresentation): Destination
+    {
+        $decoded = json_decode($jsonRepresentation, true);
+
+        return new EmailDestination(
+            self::toObjectArray($decoded['to']),
+            self::toObjectArray($decoded['cc']),
+            self::toObjectArray($decoded['bcc'])
+        );
     }
 }

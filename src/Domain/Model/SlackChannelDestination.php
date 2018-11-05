@@ -33,4 +33,22 @@ class SlackChannelDestination extends Destination
     {
         return get_class($this);
     }
+
+    /**
+     * @return string
+     */
+    public function jsonRepresentation(): string
+    {
+        return json_encode(['channel' => $this->channel()]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function fromJsonRepresentation(string $jsonRepresentation): Destination
+    {
+        $decoded = json_decode($jsonRepresentation, true);
+
+        return new SlackChannelDestination($decoded['channel']);
+    }
 }

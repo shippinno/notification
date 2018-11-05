@@ -6,7 +6,8 @@
     <entity name="Shippinno\Notification\Domain\Model\Notification"
             table="notifications"
             change-tracking-policy="DEFERRED_EXPLICIT">
-        <id name="notificationId" type="notification_id"><generator/></id>
+        <id name="notificationId" column="id" type="notification_id"><generator/></id>
+        <field name="destination" column="destination" type="notification_destination"/>
         <field name="subject" column="subject" type="notification_subject"/>
         <field name="body" column="body" type="notification_body"/>
         <field name="deduplicationKey" column="deduplication_key" type="notification_deduplication_key" nullable="true"/>
@@ -16,6 +17,5 @@
         <field name="sentAt" column="sent_at" type="datetime_immutable" nullable="true"/>
         <field name="failedAt" column="failed_at" type="datetime_immutable" nullable="true"/>
         <field name="failedFor" column="failed_for" type="text" nullable="true"/>
-        <embedded name="destination" class="Shippinno\Notification\Domain\Model\Destination"/>
     </entity>
 </doctrine-mapping>

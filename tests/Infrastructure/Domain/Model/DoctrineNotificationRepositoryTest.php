@@ -15,6 +15,7 @@ use Shippinno\Notification\Domain\Model\NotificationId;
 use Shippinno\Notification\Domain\Model\Subject;
 use Shippinno\Notification\Infrastructure\Persistence\Doctrine\Type\NotificationBodyType;
 use Shippinno\Notification\Infrastructure\Persistence\Doctrine\Type\NotificationDeduplicationKeyType;
+use Shippinno\Notification\Infrastructure\Persistence\Doctrine\Type\NotificationDestinationType;
 use Shippinno\Notification\Infrastructure\Persistence\Doctrine\Type\NotificationIdType;
 use Shippinno\Notification\Infrastructure\Persistence\Doctrine\Type\NotificationSubjectType;
 use Tanigami\ValueObjects\Web\EmailAddress;
@@ -48,6 +49,9 @@ class DoctrineNotificationRepositoryTest extends TestCase
     {
         if (!Type::hasType('notification_id')) {
             Type::addType('notification_id', NotificationIdType::class);
+        }
+        if (!Type::hasType('notification_destination')) {
+            Type::addType('notification_destination', NotificationDestinationType::class);
         }
         if (!Type::hasType('notification_subject')) {
             Type::addType('notification_subject', NotificationSubjectType::class);

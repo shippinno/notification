@@ -2,11 +2,13 @@
     "name": "shippinno/notification",
     "type": "library",
     "require": {
+        "ext-json": "*",
         "shippinno/template": "^1.0",
         "doctrine/orm": "^2.6",
         "tanigami/value-objects": "^0.4.6",
         "shippinno/email": "^0.1.0",
-        "maknz/slack": "^1.7"
+        "maknz/slack": "^1.7",
+        "mathiasverraes/classfunctions": "^1.1"
     },
     "require-dev": {
         "phpunit/phpunit": "^7.4",
