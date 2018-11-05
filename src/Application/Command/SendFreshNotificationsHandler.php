@@ -35,9 +35,10 @@ class SendFreshNotificationsHandler
      */
     public function handle(SendFreshNotifications $command): void
     {
-        $notifications = $this->notificationRepository->unsentNotifications();
+        $notifications = $this->notificationRepository->freshNotifications();
         foreach ($notifications as $notification) {
             $this->sendNotificationService->execute($notification);
+            $this->notificationRepository->persist($notification);
         }
     }
 }

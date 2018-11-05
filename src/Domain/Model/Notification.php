@@ -226,11 +226,21 @@ class Notification
             throw new LogicException(
                 sprintf(
                     'Notification is already sent: "%s" created at %s',
-                    $this->subject(),
+                    $this->subject()->subject(),
                     $this->createdAt()->format(DateTime::W3C)
                 )
             );
         }
+    }
+
+    /**
+     * For InMemoryNotificationRepository only.
+     *
+     * @param NotificationId $notificationId
+     */
+    public function setNotificationId(NotificationId $notificationId): void
+    {
+        $this->notificationId = $notificationId;
     }
 }
 

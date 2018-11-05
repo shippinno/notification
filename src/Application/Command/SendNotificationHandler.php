@@ -44,5 +44,6 @@ class SendNotificationHandler
             throw new NotificationNotFoundException($notificationId);
         }
         $this->sendNotificationService->execute($notification);
+        $this->notificationRepository->persist($notification);
     }
 }

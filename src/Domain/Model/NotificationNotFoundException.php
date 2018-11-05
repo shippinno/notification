@@ -21,7 +21,7 @@ class NotificationNotFoundException extends Exception
         $this->notificationId = $notificationId;
         parent::__construct(
             sprintf(
-                'Notification (%s) does not exits.',
+                'Notification (%s) does not exist.',
                 $this->notificationId()->id()
             )
         );

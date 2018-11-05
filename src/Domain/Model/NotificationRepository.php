@@ -13,13 +13,7 @@ interface NotificationRepository
     /**
      * @param Notification $notification
      */
-    public function markSent(Notification $notification): void;
-
-    /**
-     * @param Notification $notification
-     * @param string $reason
-     */
-    public function markFailed(Notification $notification, string $reason): void;
+    public function persist(Notification $notification): void;
 
     /**
      * @param NotificationId $notificationId
@@ -36,5 +30,5 @@ interface NotificationRepository
     /**
      * @return Notification[]
      */
-    public function unsentNotifications(): array;
+    public function freshNotifications(): array;
 }

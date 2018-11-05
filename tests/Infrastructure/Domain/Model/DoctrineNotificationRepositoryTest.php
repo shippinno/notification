@@ -95,7 +95,7 @@ class DoctrineNotificationRepositoryTest extends TestCase
             new DeduplicationKey('DEDUPLICATION_KEY')
         );
         $this->repository->add($notification);
-        $this->assertCount(1, $this->repository->unsentNotifications());
+        $this->assertCount(1, $this->repository->freshNotifications());
     }
 
     /**
@@ -142,8 +142,9 @@ class DoctrineNotificationRepositoryTest extends TestCase
         $this->repository->add($notification1);
         $this->repository->add($notification2);
         $this->repository->add($notification3);
-        $this->repository->markSent($notification1);
-        $unsentNotifications = $this->repository->unsentNotifications();
+        $notification1->markSent();
+        $this->repository->persist($notification1);
+        $unsentNotifications = $this->repository->freshNotifications();
         $this->assertCount(2, $unsentNotifications);
         $this->assertSame(2, $unsentNotifications[0]->notificationId()->id());
         $this->assertSame(3, $unsentNotifications[1]->notificationId()->id());

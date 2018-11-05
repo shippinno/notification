@@ -10,7 +10,9 @@ use Shippinno\Notification\Domain\Model\EmailDestination;
 use Shippinno\Notification\Domain\Model\Gateway;
 use Shippinno\Notification\Domain\Model\GatewayRegistry;
 use Shippinno\Notification\Domain\Model\Notification;
+use Shippinno\Notification\Domain\Model\NotificationId;
 use Shippinno\Notification\Domain\Model\NotificationRepository;
+use Shippinno\Notification\Domain\Model\SendNotification as SendNotificationService;
 use Shippinno\Notification\Domain\Model\Subject;
 use Shippinno\Notification\Infrastructure\Domain\Model\InMemoryNotificationRepository;
 use Tanigami\ValueObjects\Web\EmailAddress;
@@ -21,9 +23,6 @@ class SendNotificationHandlerTest extends TestCase
 
     /** @var NotificationRepository */
     private $notificationRepository;
-
-    /** @var Gateway */
-    private $gateway;
 
     /** @var GatewayRegistry */
     private $gatewayRegistry;
@@ -37,7 +36,7 @@ class SendNotificationHandlerTest extends TestCase
         $this->notificationRepository = new InMemoryNotificationRepository;
         $this->handler = new SendNotificationHandler(
             $this->notificationRepository,
-            $this->gatewayRegistry
+            new SendNotificationService($this->gatewayRegistry)
         );
     }
 
@@ -52,13 +51,20 @@ class SendNotificationHandlerTest extends TestCase
         $gateway = Mockery::spy(Gateway::class);
         $gateway->shouldReceive(['destinationType' => $notification->destination()->destinationType()]);
         $this->gatewayRegistry->set($gateway);
-        $this->handler->handle(new SendNotification(1));
-        $this->assertTrue($notification->isSent());
+        $this->handler->handle(new SendNotification($notification->notificationId()->id()));
+        $gateway
+            ->shouldHaveReceived('send')
+            ->with(Mockery::on(function (Notification $aNotification) use ($notification) {
+                return $aNotification->notificationId()->equals($notification->notificationId());
+            }))
+            ->once();
+        $sentNotification = $this->notificationRepository->notificationOfId($notification->notificationId());
+        $this->assertTrue($sentNotification->isSent());
     }
 
     /**
      * @expectedException \Shippinno\Notification\Domain\Model\NotificationNotFoundException
-     * @expectedExceptionMessage Notification (123) does not exits.
+     * @expectedExceptionMessage Notification (123) does not exist.
      */
     public function testItThrowsExceptionIfNotificationDoesNotExist()
     {

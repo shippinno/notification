@@ -5,6 +5,7 @@ namespace Shippinno\Notification\Infrastructure\Domain\Model;
 
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Mapping;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use LogicException;
@@ -21,10 +22,10 @@ class DoctrineNotificationRepository extends EntityRepository implements Notific
     private $isPrecocious;
 
     /**
-     * @param $em
-     * @param Mapping\ClassMetadata $class
+     * {@inheritdoc}
+     * @param bool $isPrecocious
      */
-    public function __construct($em, Mapping\ClassMetadata $class, bool $isPrecocious)
+    public function __construct($em, ClassMetadata $class, bool $isPrecocious)
     {
         $this->isPrecocious = $isPrecocious;
         parent::__construct($em, $class);
@@ -52,29 +53,7 @@ class DoctrineNotificationRepository extends EntityRepository implements Notific
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function markSent(Notification $notification): void
-    {
-        $notification->markSent();
-        $this->persist($notification);
-    }
-
-    /**
-     * {@inheritdoc}
-     * @throws ORMException
-     * @throws OptimisticLockException
-     */
-    public function markFailed(Notification $notification, string $reason): void
-    {
-        $notification->markFailed($reason);
-        $this->persist($notification);
-    }
-
-    /**
-     * @param Notification $notification
-     * @throws ORMException
-     * @throws OptimisticLockException
-     */
-    private function persist(Notification $notification): void
+    public function persist(Notification $notification): void
     {
         $this->getEntityManager()->persist($notification);
         if ($this->isPrecocious) {
@@ -101,7 +80,7 @@ class DoctrineNotificationRepository extends EntityRepository implements Notific
     /**
      * {@inheritdoc}
      */
-    public function unsentNotifications(): array
+    public function freshNotifications(): array
     {
         return $this->createQueryBuilder('n')
             ->where('n.sentAt IS NULL')

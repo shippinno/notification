@@ -15,6 +15,9 @@ class InMemoryNotificationRepository implements NotificationRepository
      */
     private $notifications = [];
 
+    /**
+     * @var int
+     */
     private $nextIdentity = 1;
 
     /**
@@ -26,35 +29,17 @@ class InMemoryNotificationRepository implements NotificationRepository
         if (!is_null($deduplicationKey) && $this->hasNotificationOfDeduplicationKey($deduplicationKey)) {
             return;
         }
-        $this->setNotification($notification);
+        $notification->setNotificationId($this->nextIdentity());
+        $this->persist($notification);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function markSent(Notification $notification): void
+    public function persist(Notification $notification): void
     {
-        $notification->markSent();
-        $this->setNotification($notification);
+        $this->notifications[$notification->notificationId()->id()] = $notification;
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function markFailed(Notification $notification, string $reason): void
-    {
-        $notification->markFailed($reason);
-        $this->setNotification($notification);
-    }
-
-    /**
-     * @param Notification $notification
-     */
-    private function setNotification(Notification $notification): void
-    {
-        $this->notifications[$this->nextIdentity()->id()] = $notification;
-    }
-
 
     /**
      * {@inheritdoc}
@@ -65,7 +50,7 @@ class InMemoryNotificationRepository implements NotificationRepository
             return null;
         }
 
-        return $this->notifications[$notificationId->id()];
+        return clone $this->notifications[$notificationId->id()];
     }
 
     /**
@@ -83,11 +68,16 @@ class InMemoryNotificationRepository implements NotificationRepository
     /**
      * {@inheritdoc}
      */
-    public function unsentNotifications(): array
+    public function freshNotifications(): array
     {
-        return array_filter($this->notifications, function (Notification $notification) {
-            return !$notification->isSent();
-        });
+        $unsent = [];
+        foreach ($this->notifications as $notification) {
+            if ($notification->isFresh()) {
+                $unsent[] = clone $notification;
+            }
+        }
+
+        return $unsent;
     }
 
     /**
