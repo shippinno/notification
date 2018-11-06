@@ -117,3 +117,22 @@ $notification->body()->body(); // => 'Good bye Jessica :)'
 
 Check out [shippinno/template](https://github.com/shippinno/template-php) for the details how the template things work.
 
+### Gateway routing
+
+`SendNotification` service routes a notification to and send it through a gateway designated on `GatewayRegistry`.
+
+```php
+use Shippinno\Notification\Domain\Model\SendNotification;
+use Shippinno\Notification\Domain\Model\GatewayRegistry;
+
+$gatewayRegistry = new GatewayRegistry;
+$gatewayRegistry->set('EmailDestination', new EmailGateway(...));
+$gatewayRegistry->set('SlackChannelDestination', new SlackGateway(...));
+
+$emailNotification = new Notification(new EmailDestination(...), ...);
+$slackChannelNotification = new Notification(new SlackChannelDestination(...), ...);
+
+$sendNotifiation = new SendNotification($gatewayRegistry);
+$sendNotification->execute($emailNotification); // will send an email
+$sendNotification->execute($slackChannelNotification); // will send a message to the Slack channel
+```
