@@ -10,9 +10,78 @@
 $ composer require shippinno/notification
 ```
 
-## Usage
+## Basic Usage
 
-### Create a notification using a template
+### Create and send a notification
+
+Create a `Notification` with a `Destination` and send it through a `Gateway`. 
+
+```php
+use Shippinno\Email\SwiftMailer\SwiftMailerSendEmail;
+use Shippinno\Notification\Domain\Model\Notification;
+use Shippinno\Notification\Domain\Model\NotificationNotSentException;
+use Shippinno\Notification\Infrastructure\Domain\Model\EmailGateway;
+
+$notification = new Notification(
+    new EmailDestination(
+        [new EmailAddress('to@example.com')],
+    ),
+    new Subject('Hello'),
+    new Body('This is a notification.'),
+    
+);
+
+$gateway = new EmailGateway(
+    new SwiftMailerSendEmail(...),
+    new EmailAddress('from@example.com')
+);
+
+try {
+    $gateway->send($notification);
+} catch (NotificationNotSentException $e) {
+    // ...
+}
+```
+
+`Gateway` has to be compatible with the `Destination` (check `Destination::sendsToDestination(Destination $destination)`). In the case above, we assume `EmailGateway` accepts notifications with `EmailDestination`. 
+
+### Persist notifications
+
+Use `NotificationRepository` to persist notifications on your database.
+
+If you use `DoctrineNotificationRepository` and set `$isPrecocious` attribute to `true`, you do not have to do `EntityManager::flush()`.
+
+```php
+$repository = new DoctrineNotificationRepository($em, $class, true); // $isPrecocious === true
+$repository->add($notification); // Already flushed.
+```
+
+You can retrieve fresh (not sent or failed) notifications to send them.
+
+```php
+$notifications = $repository->freshNotifications();
+```
+
+Working with persisted notifications, you should want to mark them as sent or failed after trying to send.
+
+If your `DoctrineNotificationRepository` is precocious, calling `persist()` will flush immediately.
+
+```php
+try {
+    $gateway->send($notification);
+    $notification->markSent();
+} catch (NotificationNotSentException $e) {
+    $notification->markFailed($e->__toString()); // mark it failed with the reason
+} finally {
+    $repository->persist($notification);
+}
+```
+
+## Advanced usage
+
+### Using templates
+
+Let’s say you have [Liquid](https://shopify.github.io/liquid/) templates like:
 
 ```sh
 $ tree -d /templates
@@ -27,10 +96,13 @@ $ cat /templates/hello.body.liquid
 Good bye, {{ her }} :)
 ```
 
+Then you can create notifications using those templates with `TemplateNotificationFactory`.
+
 ```php
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
 use Shippinno\Template\Liquid;
+use Shippinno\Notification\Domain\Model\TemplateNotificationFactory;
 
 $template = new Liquid(new Filesystem(new Local('/templates')));
 $factory = new TemplateNotificationFactory($template);
@@ -43,4 +115,5 @@ $notification->subject()->subject(); // => 'Hello Shippinno !!'
 $notification->body()->body(); // => 'Good bye Jessica :)'
 ```
 
-## Persisting notifications
+Check out [shippinno/template](https://github.com/shippinno/template-php) for the details how the template things work.
+
