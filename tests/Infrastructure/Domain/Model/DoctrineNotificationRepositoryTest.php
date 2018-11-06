@@ -122,7 +122,7 @@ class DoctrineNotificationRepositoryTest extends TestCase
         $this->repository->add($notification2);
     }
 
-    public function testItReturnsUnsentNotificationsOrderedById()
+    public function testItReturnsFreshNotificationsOrderedById()
     {
         $notification1 = new Notification(
             new EmailDestination([new EmailAddress('to@example.com')]),
