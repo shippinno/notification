@@ -4,7 +4,7 @@
     "require": {
         "ext-json": "*",
         "shippinno/template": "^1.0",
-        "doctrine/orm": "^2.6",
+        "doctrine/orm": "^2.5",
         "tanigami/value-objects": "^0.4.6",
         "shippinno/email": "^1.0.0",
         "maknz/slack": "^1.7",
