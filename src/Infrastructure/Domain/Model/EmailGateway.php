@@ -12,7 +12,6 @@ use Shippinno\Notification\Domain\Model\Notification;
 use Shippinno\Notification\Domain\Model\NotificationNotSentException;
 use Tanigami\ValueObjects\Web\Email;
 use Tanigami\ValueObjects\Web\EmailAddress;
-use Verraes\ClassFunctions\ClassFunctions;
 
 class EmailGateway extends Gateway
 {
