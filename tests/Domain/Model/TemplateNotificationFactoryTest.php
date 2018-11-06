@@ -17,7 +17,7 @@ class TemplateNotificationFactoryTest extends TestCase
         $filesystem->write('SomeNotification.body.liquid', 'Good bye {{ her }} :)');
         $template = new Liquid($filesystem);
         $factory = new TemplateNotificationFactory($template);
-        $notification = $factory->createFromTemplate(
+        $notification = $factory->create(
             'SomeNotification',
             ['you' => 'Shippinno', 'her' => 'Jessica'],
             new EmailDestination([new EmailAddress('to@example.com')])

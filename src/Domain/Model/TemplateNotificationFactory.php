@@ -43,7 +43,7 @@ class TemplateNotificationFactory
      * @throws RenderFailedException
      * @throws TemplateNotFoundException
      */
-    public function createFromTemplate(
+    public function create(
         string $templateName,
         array $templateVariables,
         Destination $destination,
