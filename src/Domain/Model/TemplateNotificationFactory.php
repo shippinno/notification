@@ -18,12 +18,12 @@ class TemplateNotificationFactory
     /**
      * @var string
      */
-    private $subjectTemplateNameFormat = '%s.subject';
+    private $subjectTemplateNameFormat = '%s__subject';
 
     /**
      * @var string
      */
-    private $bodyTemplateNameFormat = '%s.body';
+    private $bodyTemplateNameFormat = '%s__body';
 
     /**
      * @param Template $template

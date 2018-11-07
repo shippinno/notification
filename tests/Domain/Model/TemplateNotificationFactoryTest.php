@@ -13,8 +13,8 @@ class TemplateNotificationFactoryTest extends TestCase
     public function testItCreatesNotificationFromTemplate()
     {
         $filesystem = new Filesystem(new MemoryAdapter);
-        $filesystem->write('SomeNotification.subject.liquid', 'Hello {{ you }} !!');
-        $filesystem->write('SomeNotification.body.liquid', 'Good bye {{ her }} :)');
+        $filesystem->write('SomeNotification__subject.liquid', 'Hello {{ you }} !!');
+        $filesystem->write('SomeNotification__body.liquid', 'Good bye {{ her }} :)');
         $template = new Liquid($filesystem);
         $factory = new TemplateNotificationFactory($template);
         $notification = $factory->create(
