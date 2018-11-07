@@ -10,7 +10,6 @@ use Tanigami\ValueObjects\Web\EmailAddress;
 
 class NotificationDestinationTypeTest extends TestCase
 {
-    /** @test */
     public function testItConvertsEmailDestination()
     {
         $type = Mockery::mock(NotificationDestinationType::class)->makePartial();
@@ -44,7 +43,7 @@ class NotificationDestinationTypeTest extends TestCase
             $phpValueConverted->bcc()
         );
     }
-    /** @test */
+
     public function testItConvertsSlackChannelDestination()
     {
         $type = Mockery::mock(NotificationDestinationType::class)->makePartial();

@@ -12,7 +12,7 @@ class NotificationDeduplicationKeyType extends StringType
     /**
      * {@inheritdoc}
      */
-    public function convertToDatabaseValue($value, AbstractPlatform $platform)
+    public function convertToDatabaseValue($value, AbstractPlatform $platform = null)
     {
         /** @var DeduplicationKey|null $value */
         return is_null($value) ? null : $value->key();
@@ -21,7 +21,7 @@ class NotificationDeduplicationKeyType extends StringType
     /**
      * {@inheritdoc}
      */
-    public function convertToPHPValue($value, AbstractPlatform $platform)
+    public function convertToPHPValue($value, AbstractPlatform $platform = null)
     {
         return is_null($value) ? null : new DeduplicationKey($value);
     }

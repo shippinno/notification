@@ -12,7 +12,7 @@ class NotificationIdType extends IntegerType
     /**
      * {@inheritdoc}
      */
-    public function convertToDatabaseValue($value, AbstractPlatform $platform)
+    public function convertToDatabaseValue($value, AbstractPlatform $platform = null)
     {
         /** @var NotificationId $value */
         return $value->id();
@@ -21,7 +21,7 @@ class NotificationIdType extends IntegerType
     /**
      * {@inheritdoc}
      */
-    public function convertToPHPValue($value, AbstractPlatform $platform)
+    public function convertToPHPValue($value, AbstractPlatform $platform = null)
     {
         return new NotificationId((int) $value);
     }

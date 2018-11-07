@@ -12,16 +12,16 @@ class NotificationSubjectType extends StringType
     /**
      * {@inheritdoc}
      */
-    public function convertToDatabaseValue($value, AbstractPlatform $platform)
+    public function convertToDatabaseValue($value, AbstractPlatform $platform = null)
     {
-        /** @var Subject|null $value */
+        /** @var Subject $value */
         return $value->subject();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function convertToPHPValue($value, AbstractPlatform $platform)
+    public function convertToPHPValue($value, AbstractPlatform $platform = null)
     {
         return new Subject($value);
     }

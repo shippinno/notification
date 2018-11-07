@@ -12,16 +12,16 @@ class NotificationBodyType extends TextType
     /**
      * {@inheritdoc}
      */
-    public function convertToDatabaseValue($value, AbstractPlatform $platform)
+    public function convertToDatabaseValue($value, AbstractPlatform $platform = null)
     {
-        /** @var Body|null $value */
+        /** @var Body $value */
         return $value->body();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function convertToPHPValue($value, AbstractPlatform $platform)
+    public function convertToPHPValue($value, AbstractPlatform $platform = null)
     {
         return new Body($value);
     }

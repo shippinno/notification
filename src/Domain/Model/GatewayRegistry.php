@@ -10,7 +10,7 @@ class GatewayRegistry
     /**
      * @var null|GatewayRegistry
      */
-    private static $instance = null;
+    protected static $instance = null;
 
     /**
      * @var Gateway[]

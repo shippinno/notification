@@ -9,7 +9,7 @@ class DestinationRegistry
     /**
      * @var null|DestinationRegistry
      */
-    private static $instance = null;
+    protected static $instance = null;
 
     /**
      * @var Destination[]
