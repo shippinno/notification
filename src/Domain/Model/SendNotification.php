@@ -20,7 +20,10 @@ class SendNotification
         $this->gatewayRegistry = $gatewayRegistry;
     }
 
-    public function execute(Notification $notification)
+    /**
+     * @param Notification $notification
+     */
+    public function execute(Notification $notification): void
     {
         try {
             $gateway = $this->gatewayRegistry->get($notification->destination());

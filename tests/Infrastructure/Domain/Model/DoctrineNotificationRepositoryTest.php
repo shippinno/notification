@@ -99,7 +99,7 @@ class DoctrineNotificationRepositoryTest extends TestCase
     }
 
     /**
-     * @expectedException \LogicException
+     * @expectedException \Shippinno\Notification\Domain\Model\DeduplicationException
      * @expectedExceptionMessage Notification of deduplication key (DEDUPLICATION_KEY) already exists.
      */
     public function testThatNotificationWithExistingDeduplicationKeyCannotBeAdded()

@@ -7,6 +7,7 @@ interface NotificationRepository
 {
     /**
      * @param Notification $notification
+     * @throws DeduplicationException
      */
     public function add(Notification $notification): void;
 

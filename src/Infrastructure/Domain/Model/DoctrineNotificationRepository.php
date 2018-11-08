@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use LogicException;
+use Shippinno\Notification\Domain\Model\DeduplicationException;
 use Shippinno\Notification\Domain\Model\DeduplicationKey;
 use Shippinno\Notification\Domain\Model\Notification;
 use Shippinno\Notification\Domain\Model\NotificationId;
@@ -37,12 +38,7 @@ class DoctrineNotificationRepository extends EntityRepository implements Notific
     {
         $deduplicationKey = $notification->deduplicationKey();
         if (!is_null($deduplicationKey) && $this->hasNotificationOfDeduplicationKey($deduplicationKey)) {
-            throw new LogicException(
-                sprintf(
-                    'Notification of deduplication key (%s) already exists.',
-                    $deduplicationKey
-                )
-            );
+            throw new DeduplicationException($deduplicationKey);
         }
         $this->persist($notification);
     }
