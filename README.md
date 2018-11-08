@@ -86,8 +86,8 @@ Let’s say you have [Liquid](https://shopify.github.io/liquid/) templates like:
 ```sh
 $ tree -d /templates
 /templates
-|-- hello.subject.liquid 
-`-- hello.body.liquid
+|-- hello__subject.liquid 
+`-- hello__body.liquid
 $
 $ cat /templates/hello.subject.liquid
 Hello, {{ you }} !!
@@ -106,7 +106,7 @@ use Shippinno\Notification\Domain\Model\TemplateNotificationFactory;
 
 $template = new Liquid(new Filesystem(new Local('/templates')));
 $factory = new TemplateNotificationFactory($template);
-$notification = $factory->createFromTemplate(
+$notification = $factory->create(
     'hello', // template name
     ['you' => 'Shippinno', 'her' => 'Jessica']), // variables for the template
     new EmailDestination([new EmailAddress('to@example.com')])
@@ -115,7 +115,7 @@ $notification->subject()->subject(); // => 'Hello Shippinno !!'
 $notification->body()->body(); // => 'Good bye Jessica :)'
 ```
 
-Check out [shippinno/template](https://github.com/shippinno/template-php) for the details how the template things work.
+Check out [shippinno/template](https://github.com/shippinno/template-php) for more details how the template things work.
 
 ### Gateway routing
 
