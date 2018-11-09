@@ -63,8 +63,10 @@ class TemplateNotificationFactory
             new Subject($subject),
             new Body($body),
             $deduplicationKey,
-            $templateName,
-            $templateVariables
+            [
+                'template_name' => $templateName,
+                'template_variables' => $templateVariables
+            ]
         );
     }
 }

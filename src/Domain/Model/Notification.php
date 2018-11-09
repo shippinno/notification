@@ -35,14 +35,9 @@ class Notification
     protected $deduplicationKey;
 
     /**
-     * @var null|string
-     */
-    protected $templateName;
-
-    /**
      * @var array|null
      */
-    protected $templateVariables;
+    protected $metadata;
 
     /**
      * @var DateTimeImmutable
@@ -76,21 +71,20 @@ class Notification
      * @param DeduplicationKey|null $deduplicationKey
      * @param string|null $templateName
      * @param array|null $templateVariables
+     * @param array|null $metadata
      */
     public function __construct(
         Destination $destination,
         Subject $subject,
         Body $body,
         DeduplicationKey $deduplicationKey = null,
-        string $templateName = null,
-        array $templateVariables = null
+        array $metadata = null
     ) {
         $this->destination = $destination;
         $this->subject = $subject;
         $this->body = $body;
         $this->deduplicationKey = $deduplicationKey;
-        $this->templateName = $templateName;
-        $this->templateVariables = $templateVariables;
+        $this->metadata = $metadata;
         $this->createdAt = new DateTimeImmutable;
         $this->sentAt = null;
         $this->failedAt = null;
@@ -136,6 +130,22 @@ class Notification
     public function deduplicationKey(): ?DeduplicationKey
     {
         return $this->deduplicationKey;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function metadata(): ?array
+    {
+        return $this->metadata;
+    }
+
+    /**
+     * @param array $metadata
+     */
+    public function setMetadata(array $metadata): void
+    {
+        $this->metadata = $metadata;
     }
 
     /**
@@ -251,6 +261,8 @@ class Notification
     {
         return !$this->isLocked() && !$this->isFailed() &&  !$this->isSent();
     }
+
+
 
     /**
      * @return void
