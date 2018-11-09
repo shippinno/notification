@@ -5,9 +5,8 @@ namespace Shippinno\Notification\Domain\Model;
 
 use DateTime;
 use Exception;
-use Throwable;
 
-class NotificationNotSentException extends Exception
+class NotificationLockedException extends Exception
 {
     /**
      * @var Notification
@@ -16,19 +15,16 @@ class NotificationNotSentException extends Exception
 
     /**
      * @param Notification $notification
-     * @param Throwable|null $previous
      */
-    public function __construct(Notification $notification, Throwable $previous = null)
+    public function __construct(Notification $notification)
     {
         $this->notification = $notification;
         parent::__construct(
             sprintf(
-                'Failed to send notification: "%s" created at %s',
+                'Cannot send locked notification: "%s" created at %s',
                 $this->notification->subject()->subject(),
                 $this->notification->createdAt()->format(DateTime::W3C)
-            ),
-            0,
-            $previous
+            )
         );
     }
 

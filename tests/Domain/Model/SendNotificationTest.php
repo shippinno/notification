@@ -8,7 +8,7 @@ use Tanigami\ValueObjects\Web\EmailAddress;
 
 class SendNotificationTest extends TestCase
 {
-    public function test()
+    public function testItSendsNotification()
     {
         $notification = new Notification(
             new EmailDestination([new EmailAddress('to@example.com')]),
@@ -24,7 +24,7 @@ class SendNotificationTest extends TestCase
         $this->assertTrue($notification->isSent());
     }
 
-    public function testNoGateway()
+    public function testItFailsIfNotFound()
     {
         $notification = new Notification(
             new EmailDestination([new EmailAddress('to@example.com')]),
@@ -38,7 +38,7 @@ class SendNotificationTest extends TestCase
         $this->assertContains('Gateway not found', $notification->failedFor());
     }
 
-    public function testGatewayFail()
+    public function testItFailsIfGatewayFailsToSendNotification()
     {
         $notification = new Notification(
             new EmailDestination([new EmailAddress('to@example.com')]),

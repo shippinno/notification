@@ -65,6 +65,11 @@ class Notification
     protected $failedFor;
 
     /**
+     * @var null|DateTimeImmutable
+     */
+    protected $lockedAt;
+
+    /**
      * @param Destination $destination
      * @param Subject $subject
      * @param Body $body
@@ -90,6 +95,7 @@ class Notification
         $this->sentAt = null;
         $this->failedAt = null;
         $this->failedFor = null;
+        $this->lockedAt = null;
     }
 
     /**
@@ -210,11 +216,40 @@ class Notification
     }
 
     /**
+     * @return DateTimeImmutable|null
+     */
+    public function lockedAt(): ?DateTimeImmutable
+    {
+        return $this->lockedAt;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isLocked(): bool
+    {
+        return !is_null($this->lockedAt());
+    }
+
+    public function lock(): void
+    {
+        $this->lockedAt = new DateTimeImmutable;
+    }
+
+    /**
+     * @return void
+     */
+    public function unlock(): void
+    {
+        $this->lockedAt = null;
+    }
+
+    /**
      * @return bool
      */
     public function isFresh(): bool
     {
-        return !$this->isSent() && !$this->isFailed();
+        return !$this->isLocked() && !$this->isFailed() &&  !$this->isSent();
     }
 
     /**

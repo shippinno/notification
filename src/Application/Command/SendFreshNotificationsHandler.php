@@ -53,6 +53,6 @@ class SendFreshNotificationsHandler
             }
             $this->notificationRepository->persist($notification);
         }
-        $this->logger->debug(sprintf('Sent %s notifications.', $sent));
+        $this->logger->debug(sprintf('Sent %s notifications successfully.', $sent));
     }
 }
