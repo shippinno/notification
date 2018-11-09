@@ -60,7 +60,7 @@ class EmailDestination extends Destination
 
     /**
      * @param EmailAddress[] $emailAddresses
-     * @return string[[
+     * @return string[]
      */
     private static function toStringArray(array $emailAddresses)
     {
