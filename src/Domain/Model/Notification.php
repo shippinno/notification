@@ -150,7 +150,7 @@ class Notification
 
     /**
      * @param string $key
-     * @param string|array $value
+     * @param mixed $value
      */
     public function addMetadata(string $key, $value): void
     {
@@ -250,6 +250,9 @@ class Notification
         return !is_null($this->lockedAt());
     }
 
+    /**
+     * @return void
+     */
     public function lock(): void
     {
         $this->lockedAt = new DateTimeImmutable;
@@ -270,8 +273,6 @@ class Notification
     {
         return !$this->isLocked() && !$this->isFailed() &&  !$this->isSent();
     }
-
-
 
     /**
      * @return void

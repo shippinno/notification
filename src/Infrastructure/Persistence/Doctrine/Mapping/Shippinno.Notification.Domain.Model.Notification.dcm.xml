@@ -16,5 +16,6 @@
         <field name="sentAt" column="sent_at" type="datetime_immutable" nullable="true"/>
         <field name="failedAt" column="failed_at" type="datetime_immutable" nullable="true"/>
         <field name="failedFor" column="failed_for" type="text" nullable="true"/>
+        <field name="lockedAt" column="failed_for" type="datetime_immutable" nullable="true"/>
     </entity>
 </doctrine-mapping>
