@@ -149,6 +149,15 @@ class Notification
     }
 
     /**
+     * @param string $key
+     * @param string|array $value
+     */
+    public function addMetadata(string $key, $value): void
+    {
+        $this->metadata[$key] = $value;
+    }
+
+    /**
      * @return DateTimeImmutable
      */
     public function createdAt(): DateTimeImmutable
