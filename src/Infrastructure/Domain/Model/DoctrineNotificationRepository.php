@@ -7,7 +7,6 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
-use LogicException;
 use Shippinno\Notification\Domain\Model\DeduplicationException;
 use Shippinno\Notification\Domain\Model\DeduplicationKey;
 use Shippinno\Notification\Domain\Model\Notification;
@@ -80,6 +79,7 @@ class DoctrineNotificationRepository extends EntityRepository implements Notific
         return $this->createQueryBuilder('n')
             ->where('n.sentAt IS NULL')
             ->andWhere('n.failedAt IS NULL')
+            ->andWhere('n.lockedAt IS NULL')
             ->orderBy('n.notificationId', 'ASC')
             ->getQuery()
             ->getResult();

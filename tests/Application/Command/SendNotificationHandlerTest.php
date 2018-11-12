@@ -5,17 +5,13 @@ namespace Shippinno\Notification\Application\Command;
 use Mockery;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\TestCase;
-use Shippinno\Notification\Domain\Model\Body;
-use Shippinno\Notification\Domain\Model\EmailDestination;
 use Shippinno\Notification\Domain\Model\Gateway;
 use Shippinno\Notification\Domain\Model\GatewayRegistry;
 use Shippinno\Notification\Domain\Model\Notification;
-use Shippinno\Notification\Domain\Model\NotificationId;
+use Shippinno\Notification\Domain\Model\NotificationBuilder;
 use Shippinno\Notification\Domain\Model\NotificationRepository;
 use Shippinno\Notification\Domain\Model\SendNotification as SendNotificationService;
-use Shippinno\Notification\Domain\Model\Subject;
 use Shippinno\Notification\Infrastructure\Domain\Model\InMemoryNotificationRepository;
-use Tanigami\ValueObjects\Web\EmailAddress;
 
 class SendNotificationHandlerTest extends TestCase
 {
@@ -42,11 +38,7 @@ class SendNotificationHandlerTest extends TestCase
 
     public function testItSendsNotification()
     {
-        $notification = new Notification(
-            new EmailDestination([new EmailAddress('to@example.com')]),
-            new Subject('subject'),
-            new Body('body')
-        );
+        $notification = NotificationBuilder::notification()->build();
         $this->notificationRepository->add($notification);
         $gateway = Mockery::spy(Gateway::class);
         $this->gatewayRegistry->set($notification->destination()::type(), $gateway);

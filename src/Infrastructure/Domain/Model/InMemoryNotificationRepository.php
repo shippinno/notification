@@ -70,14 +70,14 @@ class InMemoryNotificationRepository implements NotificationRepository
      */
     public function freshNotifications(): array
     {
-        $unsent = [];
+        $results = [];
         foreach ($this->notifications as $notification) {
             if ($notification->isFresh()) {
-                $unsent[] = clone $notification;
+                $results[] = clone $notification;
             }
         }
 
-        return $unsent;
+        return $results;
     }
 
     /**

@@ -6,7 +6,6 @@ use Mockery;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\TestCase;
 use Shippinno\Notification\Infrastructure\Domain\Model\InMemoryNotificationRepository;
-use Tanigami\ValueObjects\Web\EmailAddress;
 
 class LockAwareSendNotificationTest extends TestCase
 {
@@ -17,11 +16,7 @@ class LockAwareSendNotificationTest extends TestCase
      */
     public function testItThrowsExceptionIfNotificationIsLocked()
     {
-        $notification = new Notification(
-            new EmailDestination([new EmailAddress('to@example.com')]),
-            new Subject('subject'),
-            new Body('body')
-        );
+        $notification = NotificationBuilder::notification()->build();
         $notification->lock();
         $gateway = Mockery::mock(Gateway::class);
         $gatewayRegistry = new GatewayRegistry;
@@ -35,11 +30,7 @@ class LockAwareSendNotificationTest extends TestCase
 
     public function testsItPersistsNotificationLockedBeforeAndUnlockedAfter()
     {
-        $notification = new Notification(
-            new EmailDestination([new EmailAddress('to@example.com')]),
-            new Subject('subject'),
-            new Body('body')
-        );
+        $notification = NotificationBuilder::notification()->build();
         $gateway = Mockery::mock(Gateway::class);
         $gateway->shouldReceive('send')->once();
         $gatewayRegistry = new GatewayRegistry;

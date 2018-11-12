@@ -5,14 +5,12 @@ namespace Shippinno\Notification\Application\Command;
 use Mockery;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\TestCase;
-use Shippinno\Notification\Domain\Model\Body;
 use Shippinno\Notification\Domain\Model\Gateway;
 use Shippinno\Notification\Domain\Model\GatewayRegistry;
-use Shippinno\Notification\Domain\Model\Notification;
+use Shippinno\Notification\Domain\Model\NotificationBuilder;
 use Shippinno\Notification\Domain\Model\NotificationRepository;
 use Shippinno\Notification\Domain\Model\SendNotification as SendNotificationService;
 use Shippinno\Notification\Domain\Model\SlackChannelDestination;
-use Shippinno\Notification\Domain\Model\Subject;
 use Shippinno\Notification\Infrastructure\Domain\Model\InMemoryNotificationRepository;
 
 class SendFreshNotificationsHandlerTest extends TestCase
@@ -41,35 +39,36 @@ class SendFreshNotificationsHandlerTest extends TestCase
     public function testItSendsFreshNotifications()
     {
         $destination = new SlackChannelDestination('channel');
-        $fresh1 = new Notification(
-            $destination,
-            new Subject('subject'),
-            new Body('body')
-        );
-        $fresh2 = new Notification(
-            $destination,
-            new Subject('subject'),
-            new Body('body')
-        );
-        $sent = new Notification(
-            $destination,
-            new Subject('subject'),
-            new Body('body')
-        );
+        $fresh1 = NotificationBuilder::notification()
+            ->withDestination($destination)
+            ->withMetadata(['a' => 'b'])
+            ->build();
+        $fresh2 = NotificationBuilder::notification()
+            ->withDestination($destination)
+            ->withMetadata(['a' => 'b'])
+            ->build();
+        $sent = NotificationBuilder::notification()
+            ->withDestination($destination)
+            ->withMetadata(['a' => 'b'])
+            ->build();
         $sent->markSent();
-        $failed = new Notification(
-            $destination,
-            new Subject('subject'),
-            new Body('body')
-        );
+        $failed = NotificationBuilder::notification()
+            ->withDestination($destination)
+            ->withMetadata(['a' => 'b'])
+            ->build();
+        $notMatchingMetadataSpec = NotificationBuilder::notification()
+            ->withDestination($destination)
+            ->withMetadata(['c' => 'c'])
+            ->build();
         $failed->markFailed('Some reason.');
         $this->notificationRepository->add($fresh1);
         $this->notificationRepository->add($fresh2);
         $this->notificationRepository->add($sent);
         $this->notificationRepository->add($failed);
+        $this->notificationRepository->add($notMatchingMetadataSpec);
         $gateway = Mockery::spy(Gateway::class);
         $this->gatewayRegistry->set($destination::type(), $gateway);
-        $this->handler->handle(new SendFreshNotifications);
+        $this->handler->handle(new SendFreshNotifications(['a' => 'b']));
         $gateway
             ->shouldHaveReceived('send')
             ->twice();

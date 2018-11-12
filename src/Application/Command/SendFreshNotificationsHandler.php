@@ -6,6 +6,7 @@ namespace Shippinno\Notification\Application\Command;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+use Shippinno\Notification\Domain\Model\Notification;
 use Shippinno\Notification\Domain\Model\NotificationRepository;
 use Shippinno\Notification\Domain\Model\SendNotification as SendNotificationService;
 
@@ -44,6 +45,13 @@ class SendFreshNotificationsHandler
     public function handle(SendFreshNotifications $command): void
     {
         $notifications = $this->notificationRepository->freshNotifications();
+        $metadataSpecs = $command->metadataSpecs();
+        $notifications = array_filter(
+            $notifications,
+            function (Notification $notification) use ($metadataSpecs) {
+                return $notification->matchesMetadataSpecs($metadataSpecs);
+            }
+        );
         $this->logger->debug(sprintf('Sending %s fresh notifications.', count($notifications)));
         $sent = 0;
         foreach ($notifications as $notification) {

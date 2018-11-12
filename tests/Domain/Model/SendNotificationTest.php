@@ -4,17 +4,12 @@ namespace Shippinno\Notification\Domain\Model;
 
 use Mockery;
 use PHPUnit\Framework\TestCase;
-use Tanigami\ValueObjects\Web\EmailAddress;
 
 class SendNotificationTest extends TestCase
 {
     public function testItSendsNotification()
     {
-        $notification = new Notification(
-            new EmailDestination([new EmailAddress('to@example.com')]),
-            new Subject('subject'),
-            new Body('body')
-        );
+        $notification = NotificationBuilder::notification()->build();
         $gateway = Mockery::spy(Gateway::class);
         $gatewayRegistry = new GatewayRegistry;
         $gatewayRegistry->set($notification->destination()::type(), $gateway);
@@ -26,11 +21,7 @@ class SendNotificationTest extends TestCase
 
     public function testItFailsIfNotFound()
     {
-        $notification = new Notification(
-            new EmailDestination([new EmailAddress('to@example.com')]),
-            new Subject('subject'),
-            new Body('body')
-        );
+        $notification = NotificationBuilder::notification()->build();
         $gatewayRegistry = new GatewayRegistry;
         $service = new SendNotification($gatewayRegistry);
         $service->execute($notification);
@@ -40,11 +31,7 @@ class SendNotificationTest extends TestCase
 
     public function testItFailsIfGatewayFailsToSendNotification()
     {
-        $notification = new Notification(
-            new EmailDestination([new EmailAddress('to@example.com')]),
-            new Subject('subject'),
-            new Body('body')
-        );
+        $notification = NotificationBuilder::notification()->build();
         $exception = new NotificationNotSentException($notification);
         $gateway = Mockery::mock(Gateway::class);
         $gateway
