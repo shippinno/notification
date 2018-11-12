@@ -46,12 +46,14 @@ class SendFreshNotificationsHandler
     {
         $notifications = $this->notificationRepository->freshNotifications();
         $specification = $command->specification();
-        $notifications = array_filter(
-            $notifications,
-            function (Notification $notification) use ($specification) {
-                return $specification->isSatisfiedBy($notification);
-            }
-        );
+        if (!is_null($specification)) {
+            $notifications = array_filter(
+                $notifications,
+                function (Notification $notification) use ($specification) {
+                    return $specification->isSatisfiedBy($notification);
+                }
+            );
+        }
         $this->logger->debug(sprintf('Sending %s fresh notifications.', count($notifications)));
         $sent = 0;
         foreach ($notifications as $notification) {

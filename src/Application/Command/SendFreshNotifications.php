@@ -8,22 +8,22 @@ use Tanigami\Specification\Specification;
 class SendFreshNotifications
 {
     /**
-     * @var Specification
+     * @var null|Specification
      */
     private $specification;
 
     /**
-     * @param Specification $specification
+     * @param Specification|null $specification
      */
-    public function __construct(Specification $specification)
+    public function __construct(Specification $specification = null)
     {
         $this->specification = $specification;
     }
 
     /**
-     * @return Specification
+     * @return null|Specification
      */
-    public function specification(): Specification
+    public function specification(): ?Specification
     {
         return $this->specification;
     }

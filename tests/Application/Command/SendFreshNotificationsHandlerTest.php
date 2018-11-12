@@ -8,6 +8,7 @@ use PHPUnit\Framework\TestCase;
 use Shippinno\Notification\Domain\Model\Gateway;
 use Shippinno\Notification\Domain\Model\GatewayRegistry;
 use Shippinno\Notification\Domain\Model\NotificationBuilder;
+use Shippinno\Notification\Domain\Model\NotificationMetadataSpecification;
 use Shippinno\Notification\Domain\Model\NotificationRepository;
 use Shippinno\Notification\Domain\Model\SendNotification as SendNotificationService;
 use Shippinno\Notification\Domain\Model\SlackChannelDestination;
@@ -68,7 +69,11 @@ class SendFreshNotificationsHandlerTest extends TestCase
         $this->notificationRepository->add($notMatchingMetadataSpec);
         $gateway = Mockery::spy(Gateway::class);
         $this->gatewayRegistry->set($destination::type(), $gateway);
-        $this->handler->handle(new SendFreshNotifications(['a' => 'b']));
+        $this->handler->handle(
+            new SendFreshNotifications(
+                new NotificationMetadataSpecification('a', '=', 'b')
+            )
+        );
         $gateway
             ->shouldHaveReceived('send')
             ->twice();
