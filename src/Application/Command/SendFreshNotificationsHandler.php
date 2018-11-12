@@ -45,11 +45,11 @@ class SendFreshNotificationsHandler
     public function handle(SendFreshNotifications $command): void
     {
         $notifications = $this->notificationRepository->freshNotifications();
-        $metadataSpecs = $command->metadataSpecs();
+        $specification = $command->specification();
         $notifications = array_filter(
             $notifications,
-            function (Notification $notification) use ($metadataSpecs) {
-                return $notification->matchesMetadataSpecs($metadataSpecs);
+            function (Notification $notification) use ($specification) {
+                return $specification->isSatisfiedBy($notification);
             }
         );
         $this->logger->debug(sprintf('Sending %s fresh notifications.', count($notifications)));

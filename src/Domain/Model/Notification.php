@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Shippinno\Notification\Domain\Model;
 
-use Adbar\Dot;
 use DateTime;
 use DateTimeImmutable;
 use LogicException;
@@ -157,23 +156,6 @@ class Notification
     {
         $this->metadata[$key] = $value;
     }
-
-    /**
-     * @param array $metadataSpecs
-     * @return bool
-     */
-    public function matchesMetadataSpecs(array $metadataSpecs): bool
-    {
-        $dotMetadata = new Dot($this->metadata);
-        foreach ($metadataSpecs as $key => $value) {
-            if ($dotMetadata->get($key) !== $value) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
 
     /**
      * @return DateTimeImmutable

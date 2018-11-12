@@ -3,26 +3,28 @@ declare(strict_types=1);
 
 namespace Shippinno\Notification\Application\Command;
 
+use Tanigami\Specification\Specification;
+
 class SendFreshNotifications
 {
     /**
-     * @var array
+     * @var Specification
      */
-    private $metadataSpecs;
+    private $specification;
 
     /**
-     * @param array $metadataSpecs
+     * @param Specification $specification
      */
-    public function __construct(array $metadataSpecs = [])
+    public function __construct(Specification $specification)
     {
-        $this->metadataSpecs = $metadataSpecs;
+        $this->specification = $specification;
     }
 
     /**
-     * @return array
+     * @return Specification
      */
-    public function metadataSpecs(): array
+    public function specification(): Specification
     {
-        return $this->metadataSpecs;
+        return $this->specification;
     }
 }
