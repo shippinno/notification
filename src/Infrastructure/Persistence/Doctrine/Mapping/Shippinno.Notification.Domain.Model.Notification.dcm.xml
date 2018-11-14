@@ -7,10 +7,10 @@
             table="notifications"
             change-tracking-policy="DEFERRED_EXPLICIT">
         <indexes>
-            <index columns="deduplication_key"></index>
-            <index columns="sent_at"></index>
-            <index columns="failed_at"></index>
-            <index columns="locked_at"></index>
+            <index columns="deduplication_key"/>
+            <index columns="sent_at"/>
+            <index columns="failed_at"/>
+            <index columns="locked_at"/>
         </indexes>
         <id name="notificationId" column="id" type="notification_id"><generator/></id>
         <field name="destination" column="destination" type="notification_destination"/>
