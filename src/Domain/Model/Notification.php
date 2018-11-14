@@ -97,6 +97,11 @@ class Notification
      */
     public function notificationId(): ?NotificationId
     {
+        // for Doctrine 2.5
+        if (is_int($this->notificationId)) {
+            $this->notificationId = new NotificationId($this->notificationId);
+        }
+
         return $this->notificationId;
     }
 
