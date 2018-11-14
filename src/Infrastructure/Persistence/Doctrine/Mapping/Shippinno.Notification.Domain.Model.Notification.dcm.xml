@@ -6,6 +6,12 @@
     <entity name="Shippinno\Notification\Domain\Model\Notification"
             table="notifications"
             change-tracking-policy="DEFERRED_EXPLICIT">
+        <indexes>
+            <index columns="deduplication_key"></index>
+            <index columns="sent_at"></index>
+            <index columns="failed_at"></index>
+            <index columns="locked_at"></index>
+        </indexes>
         <id name="notificationId" column="id" type="notification_id"><generator/></id>
         <field name="destination" column="destination" type="notification_destination"/>
         <field name="subject" column="subject" type="notification_subject"/>
