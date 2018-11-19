@@ -4,7 +4,9 @@ declare(strict_types=1);
 namespace Shippinno\Notification\Domain\Model;
 
 use Adbar\Dot;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\Expr\Comparison;
+use Doctrine\Common\Collections\Expr\Expression;
 use RuntimeException;
 use Tanigami\Specification\Specification;
 
@@ -13,7 +15,7 @@ class NotificationMetadataSpecification extends Specification
     /**
      * @var Comparison
      */
-    private $expression;
+    protected $expression;
 
     /**
      * @param string $key
@@ -57,5 +59,32 @@ class NotificationMetadataSpecification extends Specification
             default:
                 throw new RuntimeException(sprintf('Unknown operator: %s', $operator));
         }
+    }
+
+    /**
+     * @return Comparison
+     */
+    public function expression(): Comparison
+    {
+        return $this->expression;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function whereExpression(string $alias): string
+    {
+        $value = $this->expression()->getValue()->getValue();
+        if (is_string($value)) {
+            $value = "'$value'";
+        }
+
+        return sprintf(
+            "JSON_EXTRACT(%s.metadata, '$.%s') %s %s",
+            $alias,
+            $this->expression()->getField(),
+            $this->expression()->getOperator(),
+            $value
+        );
     }
 }

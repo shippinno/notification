@@ -4,6 +4,7 @@ namespace Shippinno\Notification\Infrastructure\Domain\Model;
 
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Query\Expr\Comparison;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\ORM\Tools\Setup;
 use PHPUnit\Framework\TestCase;
@@ -11,7 +12,13 @@ use Shippinno\Notification\Domain\Model\Body;
 use Shippinno\Notification\Domain\Model\DeduplicationKey;
 use Shippinno\Notification\Domain\Model\EmailDestination;
 use Shippinno\Notification\Domain\Model\Notification;
+use Shippinno\Notification\Domain\Model\NotificationBuilder;
 use Shippinno\Notification\Domain\Model\NotificationId;
+use Shippinno\Notification\Domain\Model\NotificationIsFailedSpecification;
+use Shippinno\Notification\Domain\Model\NotificationIsFreshSpecification;
+use Shippinno\Notification\Domain\Model\NotificationIsSentAtSpecification;
+use Shippinno\Notification\Domain\Model\NotificationIsSentSpecification;
+use Shippinno\Notification\Domain\Model\NotificationMetadataSpecification;
 use Shippinno\Notification\Domain\Model\Subject;
 use Shippinno\Notification\Infrastructure\Persistence\Doctrine\Type\NotificationBodyType;
 use Shippinno\Notification\Infrastructure\Persistence\Doctrine\Type\NotificationDeduplicationKeyType;
@@ -73,12 +80,13 @@ class DoctrineNotificationRepositoryTest extends TestCase
 
     protected function initEntityManager()
     {
+        $config = Setup::createXMLMetadataConfiguration(
+            [__DIR__.'/../../../../src/Infrastructure/Persistence/Doctrine/Mapping'],
+            $devMode = true
+        );
         return EntityManager::create(
             ['url' => 'sqlite:///:memory:'],
-            Setup::createXMLMetadataConfiguration(
-                [__DIR__.'/../../../../src/Infrastructure/Persistence/Doctrine/Mapping'],
-                $devMode = true
-            )
+            $config
         );
     }
 
@@ -148,5 +156,24 @@ class DoctrineNotificationRepositoryTest extends TestCase
         $this->assertCount(2, $unsentNotifications);
         $this->assertSame(2, $unsentNotifications[0]->notificationId()->id());
         $this->assertSame(3, $unsentNotifications[1]->notificationId()->id());
+    }
+
+    public function testItReturnsNotificationsMatchingSpecification()
+    {
+        $freshNotification = NotificationBuilder::notification()->build();
+        $lockedNotification = NotificationBuilder::notification()->build();
+        $lockedNotification->lock();
+        $failedNotification = NotificationBuilder::notification()->build();
+        $failedNotification->markFailed('reason');
+        $sentNotification = NotificationBuilder::notification()->build();
+        $sentNotification->markSent();
+        $this->repository->add($freshNotification);
+        $this->repository->add($lockedNotification);
+        $this->repository->add($failedNotification);
+        $this->repository->add($sentNotification);
+        $specification = new NotificationIsFailedSpecification;
+        $result = $this->repository->query($specification);
+        $this->assertCount(1, $result);
+        $this->assertTrue($result[0]->isFailed());
     }
 }

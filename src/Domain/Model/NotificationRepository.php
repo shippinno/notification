@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace Shippinno\Notification\Domain\Model;
 
+use Tanigami\Specification\Specification;
+
 interface NotificationRepository
 {
     /**
@@ -29,7 +31,16 @@ interface NotificationRepository
     public function hasNotificationOfDeduplicationKey(DeduplicationKey $deduplicationKey): bool;
 
     /**
+     * @param Specification $specification
+     * @param array|null $orderings
+     * @param int|null $maxResults
+     * @param int|null $firstResult
      * @return Notification[]
      */
-    public function freshNotifications(): array;
+    public function query(
+        Specification $specification,
+        array $orderings = null,
+        int $maxResults = null,
+        int $firstResult = null
+    ): array;
 }

@@ -11,7 +11,7 @@
         "mathiasverraes/classfunctions": "^1.1",
         "adbario/php-dot-notation": "^2.1",
         "fzaninotto/faker": "^1.8",
-        "tanigami/specification": "^1.1"
+        "tanigami/specification": "^1.3"
     },
     "require-dev": {
         "phpunit/phpunit": "^7.4",

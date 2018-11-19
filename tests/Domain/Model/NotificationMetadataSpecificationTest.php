@@ -168,4 +168,19 @@ class NotificationMetadataSpecificationTest extends TestCase
             )
         );
     }
+
+    public function testWhereExpression()
+    {
+        $this->assertSame(
+            "JSON_EXTRACT(n.metadata, '$.a.b') = 'c'",
+            (new NotificationMetadataSpecification('a.b', '=', 'c'))
+                ->whereExpression('n')
+        );
+
+        $this->assertSame(
+            "JSON_EXTRACT(n.metadata, '$.a.b') > 0",
+            (new NotificationMetadataSpecification('a.b', '>', 0))
+                ->whereExpression('n')
+        );
+    }
 }

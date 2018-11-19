@@ -5,8 +5,10 @@ namespace Shippinno\Notification\Infrastructure\Domain\Model;
 
 use Shippinno\Notification\Domain\Model\DeduplicationKey;
 use Shippinno\Notification\Domain\Model\Notification;
+use Shippinno\Notification\Domain\Model\NotificationDeduplicationKeySpecification;
 use Shippinno\Notification\Domain\Model\NotificationId;
 use Shippinno\Notification\Domain\Model\NotificationRepository;
+use Tanigami\Specification\Specification;
 
 class InMemoryNotificationRepository implements NotificationRepository
 {
@@ -59,25 +61,36 @@ class InMemoryNotificationRepository implements NotificationRepository
     public function hasNotificationOfDeduplicationKey(DeduplicationKey $deduplicationKey): bool
     {
         foreach ($this->notifications as $notification) {
-            if ($notification->deduplicationKey()->equals($deduplicationKey)) {
+            if ((new NotificationDeduplicationKeySpecification($deduplicationKey))->isSatisfiedBy($notification)) {
                 return true;
             }
         }
+
+        return false;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function freshNotifications(): array
-    {
-        $results = [];
-        foreach ($this->notifications as $notification) {
-            if ($notification->isFresh()) {
-                $results[] = clone $notification;
-            }
-        }
+    public function query(
+        Specification $specification,
+        array $orderings = null,
+        int $maxResults = null,
+        int $firstResult = null
+    ): array {
+        $notifications =
+            array_values(
+                array_filter(
+                    $this->notifications,
+                    function (Notification $notification) use ($specification) {
+                        return $specification->isSatisfiedBy($notification);
+                    }
+                )
+            );
 
-        return $results;
+        // No max results or first result implementation
+
+        return $notifications;
     }
 
     /**

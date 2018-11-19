@@ -10,8 +10,10 @@ use Doctrine\ORM\ORMException;
 use Shippinno\Notification\Domain\Model\DeduplicationException;
 use Shippinno\Notification\Domain\Model\DeduplicationKey;
 use Shippinno\Notification\Domain\Model\Notification;
+use Shippinno\Notification\Domain\Model\NotificationDeduplicationKeySpecification;
 use Shippinno\Notification\Domain\Model\NotificationId;
 use Shippinno\Notification\Domain\Model\NotificationRepository;
+use Tanigami\Specification\Specification;
 
 class DoctrineNotificationRepository extends EntityRepository implements NotificationRepository
 {
@@ -68,7 +70,7 @@ class DoctrineNotificationRepository extends EntityRepository implements Notific
      */
     public function hasNotificationOfDeduplicationKey(DeduplicationKey $deduplicationKey): bool
     {
-        return !is_null($this->findOneBy(['deduplicationKey' => $deduplicationKey]));
+        return !empty($this->query(new NotificationDeduplicationKeySpecification($deduplicationKey)));
     }
 
     /**
@@ -83,5 +85,31 @@ class DoctrineNotificationRepository extends EntityRepository implements Notific
             ->orderBy('n.notificationId', 'ASC')
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function query(
+        Specification $specification,
+        array $orderings = null,
+        int $maxResults = null,
+        int $firstResult = null
+    ): array {
+        $queryBuilder =  $this->createQueryBuilder('n');
+        $queryBuilder->where($specification->whereExpression('n'));
+        if (!is_null($orderings)) {
+            foreach ($orderings as $sort => $order) {
+                $queryBuilder->orderBy($sort, $order);
+            }
+        }
+        if (!is_null($maxResults)) {
+            $queryBuilder->setMaxResults($maxResults);
+        }
+        if (!is_null($firstResult)) {
+            $queryBuilder->setFirstResult($firstResult);
+        }
+
+        return $queryBuilder->getQuery()->getResult();
     }
 }
