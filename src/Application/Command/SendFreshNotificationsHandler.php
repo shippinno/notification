@@ -46,7 +46,8 @@ class SendFreshNotificationsHandler
     {
         $notifications = $this->notificationRepository->query(
             (new NotificationIsFreshSpecification)->and($command->specification()),
-            ['createdAt' => 'ASC']
+            ['notificationId' => 'ASC'],
+            100
         );
         $this->logger->debug(sprintf('Sending %s fresh notifications.', count($notifications)));
         $sent = 0;
