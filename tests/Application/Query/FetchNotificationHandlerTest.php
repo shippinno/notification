@@ -20,7 +20,7 @@ class FetchNotificationHandlerTest extends TestCase
             new NotificationDtoDataTransformer
         );
         $result = $handler->handle(new FetchNotification(1));
-        $this->assertSame(1, $result['id']);
+        $this->assertSame(1, $result['notification_id']);
     }
 
     /**
