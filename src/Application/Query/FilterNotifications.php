@@ -8,7 +8,7 @@ use Tanigami\Specification\Specification;
 class FilterNotifications
 {
     /**
-     * @var Specification
+     * @var null|Specification
      */
     private $specification;
 
@@ -28,13 +28,13 @@ class FilterNotifications
     private $firstResult;
 
     /**
-     * @param Specification $specification
+     * @param Specification|null $specification
      * @param array|null $orderings
      * @param int|null $maxResults
      * @param int|null $firstResult
      */
     public function __construct(
-        Specification $specification,
+        Specification $specification = null,
         array $orderings = null,
         int $maxResults = null,
         int $firstResult = null
@@ -46,9 +46,9 @@ class FilterNotifications
     }
 
     /**
-     * @return Specification
+     * @return null|Specification
      */
-    public function specification(): Specification
+    public function specification(): ?Specification
     {
         return $this->specification;
     }

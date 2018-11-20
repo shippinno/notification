@@ -91,16 +91,18 @@ class DoctrineNotificationRepository extends EntityRepository implements Notific
      * {@inheritdoc}
      */
     public function query(
-        Specification $specification,
+        Specification $specification = null,
         array $orderings = null,
         int $maxResults = null,
         int $firstResult = null
     ): array {
         $queryBuilder =  $this->createQueryBuilder('n');
-        $queryBuilder->where($specification->whereExpression('n'));
+        if (!is_null($specification)) {
+            $queryBuilder->where($specification->whereExpression('n'));
+        }
         if (!is_null($orderings)) {
             foreach ($orderings as $sort => $order) {
-                $queryBuilder->orderBy($sort, $order);
+                $queryBuilder->orderBy('n.' . $sort, $order);
             }
         }
         if (!is_null($maxResults)) {

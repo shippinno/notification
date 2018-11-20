@@ -8,6 +8,7 @@
             change-tracking-policy="DEFERRED_EXPLICIT">
         <indexes>
             <index columns="deduplication_key"/>
+            <index columns="created_at"/>
             <index columns="sent_at"/>
             <index columns="failed_at"/>
             <index columns="locked_at"/>

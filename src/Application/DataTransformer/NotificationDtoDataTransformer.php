@@ -27,7 +27,7 @@ class NotificationDtoDataTransformer implements NotificationDataTransformer
     public function read()
     {
         return [
-            'id' => $this->notification->notificationId()->id(),
+            'notification_id' => $this->notification->notificationId()->id(),
             'destination' => json_decode($this->notification->destination()->typedJsonRepresentation(), true),
             'subject' => $this->notification->subject()->subject(),
             'body' => $this->notification->body()->body(),

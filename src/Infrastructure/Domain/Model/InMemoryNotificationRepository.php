@@ -73,20 +73,23 @@ class InMemoryNotificationRepository implements NotificationRepository
      * {@inheritdoc}
      */
     public function query(
-        Specification $specification,
+        Specification $specification = null,
         array $orderings = null,
         int $maxResults = null,
         int $firstResult = null
     ): array {
-        $notifications =
-            array_values(
-                array_filter(
-                    $this->notifications,
-                    function (Notification $notification) use ($specification) {
-                        return $specification->isSatisfiedBy($notification);
-                    }
-                )
-            );
+        $notifications = $this->notifications;
+        if (!is_null($specification)) {
+            $notifications =
+                array_values(
+                    array_filter(
+                        $this->notifications,
+                        function (Notification $notification) use ($specification) {
+                            return $specification->isSatisfiedBy($notification);
+                        }
+                    )
+                );
+        }
 
         // No max results or first result implementation
 

@@ -31,14 +31,14 @@ interface NotificationRepository
     public function hasNotificationOfDeduplicationKey(DeduplicationKey $deduplicationKey): bool;
 
     /**
-     * @param Specification $specification
+     * @param Specification|null $specification
      * @param array|null $orderings
      * @param int|null $maxResults
      * @param int|null $firstResult
      * @return Notification[]
      */
     public function query(
-        Specification $specification,
+        Specification $specification = null,
         array $orderings = null,
         int $maxResults = null,
         int $firstResult = null
