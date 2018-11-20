@@ -44,8 +44,12 @@ class SendFreshNotificationsHandler
      */
     public function handle(SendFreshNotifications $command): void
     {
+        $specification = new NotificationIsFreshSpecification;
+        if (!is_null($command->specification())) {
+            $specification = $specification->and($command->specification());
+        }
         $notifications = $this->notificationRepository->query(
-            (new NotificationIsFreshSpecification)->and($command->specification()),
+            $specification,
             ['notificationId' => 'ASC'],
             100
         );
