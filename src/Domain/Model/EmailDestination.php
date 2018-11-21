@@ -10,17 +10,17 @@ class EmailDestination extends Destination
     /**
      * @var string[]
      */
-    private $to;
+    protected $to;
 
     /**
      * @var string[]
      */
-    private $cc;
+    protected $cc;
 
     /**
      * @var string[]
      */
-    private $bcc;
+    protected $bcc;
 
     /**
      * @param EmailAddress[] $to
@@ -62,7 +62,7 @@ class EmailDestination extends Destination
      * @param EmailAddress[] $emailAddresses
      * @return string[]
      */
-    private static function toStringArray(array $emailAddresses)
+    protected static function toStringArray(array $emailAddresses)
     {
         return array_map(function (EmailAddress $emailAddress) {
             return $emailAddress->emailAddress();
@@ -73,7 +73,7 @@ class EmailDestination extends Destination
      * @param string[] $emailAddresses
      * @return EmailAddress[]
      */
-    private static function toObjectArray(array $emailAddresses): array
+    protected static function toObjectArray(array $emailAddresses): array
     {
         return array_map(function (string $emailAddress) {
             return new EmailAddress($emailAddress);
