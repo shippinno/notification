@@ -18,7 +18,8 @@ class NotificationDestinationTypeTest extends TestCase
             [new EmailAddress('to1@example.com'), new EmailAddress('to2@example.com')],
             [new EmailAddress('cc1@example.com'), new EmailAddress('cc2@example.com')],
             [new EmailAddress('bcc1@example.com'), new EmailAddress('bcc2@example.com')],
-            new SmtpConfiguration('HOST', 25, 'USERNAME', 'PASSWORD')
+            new SmtpConfiguration('HOST', 25, 'USERNAME', 'PASSWORD'),
+            new EmailAddress('from@example.com')
         );
         $databaseValue = $type->convertToDatabaseValue($phpValue);
         $this->assertEquals(
@@ -33,6 +34,7 @@ class NotificationDestinationTypeTest extends TestCase
                     'username' => 'USERNAME',
                     'password' => 'PASSWORD',
                 ],
+                'from' => 'from@example.com',
             ],
             json_decode($databaseValue, true)
         );
@@ -54,6 +56,7 @@ class NotificationDestinationTypeTest extends TestCase
         $this->assertEquals(25, $phpValueConverted->smtpConfiguration()->port());
         $this->assertEquals('USERNAME', $phpValueConverted->smtpConfiguration()->username());
         $this->assertEquals('PASSWORD', $phpValueConverted->smtpConfiguration()->password());
+        $this->assertTrue($phpValueConverted->from()->equals(new EmailAddress('from@example.com')));
     }
 
     public function testItConvertsSlackChannelDestination()

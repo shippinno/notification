@@ -29,21 +29,29 @@ class EmailDestination extends Destination
     protected $smtpConfiguration;
 
     /**
+     * @var null|string
+     */
+    protected $from;
+
+    /**
      * @param array $to
      * @param array $cc
      * @param array $bcc
      * @param SmtpConfiguration|null $smtpConfiguration
+     * @param EmailAddress|null $from
      */
     public function __construct(
         array $to,
         array $cc = [],
         array $bcc = [],
-        SmtpConfiguration $smtpConfiguration = null
+        SmtpConfiguration $smtpConfiguration = null,
+        EmailAddress $from = null
     ) {
         $this->to = self::toStringArray($to);
         $this->cc = self::toStringArray($cc);
         $this->bcc = self::toStringArray($bcc);
         $this->smtpConfiguration = $smtpConfiguration;
+        $this->from = is_null($from) ? null : $from->emailAddress();
     }
 
     /**
@@ -79,6 +87,14 @@ class EmailDestination extends Destination
     }
 
     /**
+     * @return null|EmailAddress
+     */
+    public function from(): ?EmailAddress
+    {
+        return is_null($this->from) ? null : new EmailAddress($this->from, true);
+    }
+
+    /**
      * @param EmailAddress[] $emailAddresses
      * @return string[]
      */
@@ -96,7 +112,7 @@ class EmailDestination extends Destination
     protected static function toObjectArray(array $emailAddresses): array
     {
         return array_map(function (string $emailAddress) {
-            return new EmailAddress($emailAddress);
+            return new EmailAddress($emailAddress, true);
         }, $emailAddresses);
     }
 
@@ -117,6 +133,7 @@ class EmailDestination extends Destination
             'cc' => $this->cc,
             'bcc' => $this->bcc,
             'smtpConfiguration' => $smtpConfiguration,
+            'from' => $this->from
         ]);
     }
 
@@ -138,7 +155,8 @@ class EmailDestination extends Destination
                     $decoded['smtpConfiguration']['port'],
                     $decoded['smtpConfiguration']['username'],
                     $decoded['smtpConfiguration']['password']
-                )
+                ),
+            is_null($decoded['from']) ? null : new EmailAddress($decoded['from'], true)
         );
     }
 }
