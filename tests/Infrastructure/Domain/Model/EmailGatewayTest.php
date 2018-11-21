@@ -7,6 +7,7 @@ use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\TestCase;
 use Shippinno\Email\EmailNotSentException;
 use Shippinno\Email\SendEmail;
+use Shippinno\Email\SmtpConfiguration;
 use Shippinno\Notification\Domain\Model\Body;
 use Shippinno\Notification\Domain\Model\Destination;
 use Shippinno\Notification\Domain\Model\EmailDestination;
@@ -31,19 +32,23 @@ class EmailGatewayTest extends TestCase
             new Body('BODY')
         );
         $sendEmail = Mockery::spy(SendEmail::class);
-        $gateway = new EmailGateway($sendEmail, new EmailAddress('from@example.com'));
+        $gateway = new EmailGateway($sendEmail, new EmailAddress('from@example.com'), 3);
         $gateway->send($notification);
         $sendEmail
             ->shouldHaveReceived('execute')
-            ->with(Mockery::on(function (Email $email) {
-                return
-                    $email->subject() == 'SUBJECT' &&
-                    $email->body() == 'BODY' &&
-                    $email->from()->equals(new EmailAddress('from@example.com')) &&
-                    $email->tos() == [new EmailAddress('to@example.com')] &&
-                    $email->ccs() == [new EmailAddress('cc@example.com')] &&
-                    $email->bccs() == [new EmailAddress('bcc@example.com')];
-            }));
+            ->withArgs([
+                Mockery::on(function (Email $email) {
+                    return
+                        $email->subject() == 'SUBJECT' &&
+                        $email->body() == 'BODY' &&
+                        $email->from()->equals(new EmailAddress('from@example.com')) &&
+                        $email->tos() == [new EmailAddress('to@example.com')] &&
+                        $email->ccs() == [new EmailAddress('cc@example.com')] &&
+                        $email->bccs() == [new EmailAddress('bcc@example.com')];
+                }),
+                3,
+                null
+            ]);
     }
 
     /**

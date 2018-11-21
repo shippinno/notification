@@ -4,6 +4,7 @@ namespace Shippinno\Notification\Infrastructure\Persistence\Doctrine\Type;
 
 use Mockery;
 use PHPUnit\Framework\TestCase;
+use Shippinno\Email\SmtpConfiguration;
 use Shippinno\Notification\Domain\Model\EmailDestination;
 use Shippinno\Notification\Domain\Model\SlackChannelDestination;
 use Tanigami\ValueObjects\Web\EmailAddress;
@@ -16,7 +17,8 @@ class NotificationDestinationTypeTest extends TestCase
         $phpValue = new EmailDestination(
             [new EmailAddress('to1@example.com'), new EmailAddress('to2@example.com')],
             [new EmailAddress('cc1@example.com'), new EmailAddress('cc2@example.com')],
-            [new EmailAddress('bcc1@example.com'), new EmailAddress('bcc2@example.com')]
+            [new EmailAddress('bcc1@example.com'), new EmailAddress('bcc2@example.com')],
+            new SmtpConfiguration('HOST', 25, 'USERNAME', 'PASSWORD')
         );
         $databaseValue = $type->convertToDatabaseValue($phpValue);
         $this->assertEquals(
@@ -25,6 +27,12 @@ class NotificationDestinationTypeTest extends TestCase
                 'to' => ['to1@example.com', 'to2@example.com'],
                 'cc' => ['cc1@example.com', 'cc2@example.com'],
                 'bcc' => ['bcc1@example.com', 'bcc2@example.com'],
+                'smtpConfiguration' => [
+                    'host' => 'HOST',
+                    'port' => 25,
+                    'username' => 'USERNAME',
+                    'password' => 'PASSWORD',
+                ],
             ],
             json_decode($databaseValue, true)
         );
@@ -42,6 +50,10 @@ class NotificationDestinationTypeTest extends TestCase
             [new EmailAddress('bcc1@example.com'), new EmailAddress('bcc2@example.com')],
             $phpValueConverted->bcc()
         );
+        $this->assertEquals('HOST', $phpValueConverted->smtpConfiguration()->host());
+        $this->assertEquals(25, $phpValueConverted->smtpConfiguration()->port());
+        $this->assertEquals('USERNAME', $phpValueConverted->smtpConfiguration()->username());
+        $this->assertEquals('PASSWORD', $phpValueConverted->smtpConfiguration()->password());
     }
 
     public function testItConvertsSlackChannelDestination()

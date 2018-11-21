@@ -5,6 +5,7 @@ namespace Shippinno\Notification\Infrastructure\Domain\Model;
 
 use Shippinno\Email\EmailNotSentException;
 use Shippinno\Email\SendEmail;
+use Shippinno\Email\SmtpConfiguration;
 use Shippinno\Notification\Domain\Model\Destination;
 use Shippinno\Notification\Domain\Model\EmailDestination;
 use Shippinno\Notification\Domain\Model\Gateway;
@@ -18,21 +19,28 @@ class EmailGateway extends Gateway
     /**
      * @var SendEmail
      */
-    private $sendEmail;
+    protected $sendEmail;
 
     /**
      * @var EmailAddress
      */
-    private $from;
+    protected $from;
+
+    /**
+     * @var int
+     */
+    protected $maxAttempts;
 
     /**
      * @param SendEmail $sendEmail
      * @param EmailAddress $from
+     * @param int $maxAttempts
      */
-    public function __construct(SendEmail $sendEmail, EmailAddress $from)
+    public function __construct(SendEmail $sendEmail, EmailAddress $from, int $maxAttempts = 1)
     {
         $this->sendEmail = $sendEmail;
         $this->from = $from;
+        $this->maxAttempts = $maxAttempts;
     }
 
     /**
@@ -51,7 +59,7 @@ class EmailGateway extends Gateway
             $destination->bcc()
         );
         try {
-            $this->sendEmail->execute($email);
+            $this->sendEmail->execute($email, $this->maxAttempts, $destination->smtpConfiguration());
         } catch (EmailNotSentException $e) {
             throw new NotificationNotSentException($notification, $e);
         }

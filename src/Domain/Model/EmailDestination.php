@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Shippinno\Notification\Domain\Model;
 
+use Shippinno\Email\SmtpConfiguration;
 use Tanigami\ValueObjects\Web\EmailAddress;
 
 class EmailDestination extends Destination
@@ -23,15 +24,26 @@ class EmailDestination extends Destination
     protected $bcc;
 
     /**
-     * @param EmailAddress[] $to
-     * @param EmailAddress[] $cc
-     * @param EmailAddress[] $bcc
+     * @var SmtpConfiguration
      */
-    public function __construct(array $to, array $cc = [], array $bcc = [])
-    {
+    protected $smtpConfiguration;
+
+    /**
+     * @param array $to
+     * @param array $cc
+     * @param array $bcc
+     * @param SmtpConfiguration|null $smtpConfiguration
+     */
+    public function __construct(
+        array $to,
+        array $cc = [],
+        array $bcc = [],
+        SmtpConfiguration $smtpConfiguration = null
+    ) {
         $this->to = self::toStringArray($to);
         $this->cc = self::toStringArray($cc);
         $this->bcc = self::toStringArray($bcc);
+        $this->smtpConfiguration = $smtpConfiguration;
     }
 
     /**
@@ -56,6 +68,14 @@ class EmailDestination extends Destination
     public function bcc(): array
     {
         return self::toObjectArray($this->bcc);
+    }
+
+    /**
+     * @return null|SmtpConfiguration
+     */
+    public function smtpConfiguration(): ?SmtpConfiguration
+    {
+        return $this->smtpConfiguration;
     }
 
     /**
@@ -85,10 +105,18 @@ class EmailDestination extends Destination
      */
     public function jsonRepresentation(): string
     {
+        $smtpConfiguration = is_null($this->smtpConfiguration) ? [] : [
+            'host' => $this->smtpConfiguration->host(),
+            'port' => $this->smtpConfiguration->port(),
+            'username' => $this->smtpConfiguration->username(),
+            'password' => $this->smtpConfiguration->password(),
+        ];
+
         return json_encode([
             'to' => $this->to,
             'cc' => $this->cc,
             'bcc' => $this->bcc,
+            'smtpConfiguration' => $smtpConfiguration,
         ]);
     }
 
@@ -102,7 +130,15 @@ class EmailDestination extends Destination
         return new EmailDestination(
             self::toObjectArray($decoded['to']),
             self::toObjectArray($decoded['cc']),
-            self::toObjectArray($decoded['bcc'])
+            self::toObjectArray($decoded['bcc']),
+            $decoded['smtpConfiguration'] === []
+                ? null
+                : new SmtpConfiguration(
+                    $decoded['smtpConfiguration']['host'],
+                    $decoded['smtpConfiguration']['port'],
+                    $decoded['smtpConfiguration']['username'],
+                    $decoded['smtpConfiguration']['password']
+                )
         );
     }
 }
