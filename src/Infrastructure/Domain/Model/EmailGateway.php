@@ -53,7 +53,7 @@ class EmailGateway extends Gateway
         $email = new Email(
             $notification->subject()->subject(),
             $notification->body()->body(),
-            $this->from,
+            $destination->from() ?? $this->from,
             $destination->to(),
             $destination->cc(),
             $destination->bcc()
