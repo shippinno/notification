@@ -18,7 +18,7 @@
         <field name="subject" column="subject" type="notification_subject"/>
         <field name="body" column="body" type="notification_body"/>
         <field name="deduplicationKey" column="deduplication_key" type="notification_deduplication_key" nullable="true"/>
-        <field name="metadata" column="metadata" type="json" nullable="true"/>
+        <field name="metadata" column="metadata" type="notification_metadata" nullable="true"/>
         <field name="createdAt" column="created_at" type="datetime_immutable"/>
         <field name="sentAt" column="sent_at" type="datetime_immutable" nullable="true"/>
         <field name="failedAt" column="failed_at" type="datetime_immutable" nullable="true"/>

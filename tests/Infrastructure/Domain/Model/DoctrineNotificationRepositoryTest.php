@@ -4,7 +4,6 @@ namespace Shippinno\Notification\Infrastructure\Domain\Model;
 
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Query\Expr\Comparison;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\ORM\Tools\Setup;
 use PHPUnit\Framework\TestCase;
@@ -13,17 +12,13 @@ use Shippinno\Notification\Domain\Model\DeduplicationKey;
 use Shippinno\Notification\Domain\Model\EmailDestination;
 use Shippinno\Notification\Domain\Model\Notification;
 use Shippinno\Notification\Domain\Model\NotificationBuilder;
-use Shippinno\Notification\Domain\Model\NotificationId;
 use Shippinno\Notification\Domain\Model\NotificationIsFailedSpecification;
-use Shippinno\Notification\Domain\Model\NotificationIsFreshSpecification;
-use Shippinno\Notification\Domain\Model\NotificationIsSentAtSpecification;
-use Shippinno\Notification\Domain\Model\NotificationIsSentSpecification;
-use Shippinno\Notification\Domain\Model\NotificationMetadataSpecification;
 use Shippinno\Notification\Domain\Model\Subject;
 use Shippinno\Notification\Infrastructure\Persistence\Doctrine\Type\NotificationBodyType;
 use Shippinno\Notification\Infrastructure\Persistence\Doctrine\Type\NotificationDeduplicationKeyType;
 use Shippinno\Notification\Infrastructure\Persistence\Doctrine\Type\NotificationDestinationType;
 use Shippinno\Notification\Infrastructure\Persistence\Doctrine\Type\NotificationIdType;
+use Shippinno\Notification\Infrastructure\Persistence\Doctrine\Type\NotificationMetadataType;
 use Shippinno\Notification\Infrastructure\Persistence\Doctrine\Type\NotificationSubjectType;
 use Tanigami\ValueObjects\Web\EmailAddress;
 
@@ -68,6 +63,9 @@ class DoctrineNotificationRepositoryTest extends TestCase
         }
         if (!Type::hasType('notification_deduplication_key')) {
             Type::addType('notification_deduplication_key', NotificationDeduplicationKeyType::class);
+        }
+        if (!Type::hasType('notification_metadata')) {
+            Type::addType('notification_metadata', NotificationMetadataType::class);
         }
     }
 

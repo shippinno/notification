@@ -4,10 +4,10 @@ declare(strict_types=1);
 namespace Shippinno\Notification\Infrastructure\Persistence\Doctrine\Type;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
-use Doctrine\DBAL\Types\JsonType;
 use Shippinno\Notification\Domain\Model\Destination;
+use Tanigami\DoctrineJsonUnescapedType\JsonUnescapedType;
 
-class NotificationDestinationType extends JsonType
+class NotificationDestinationType extends JsonUnescapedType
 {
     /**
      * {@inheritdoc}
