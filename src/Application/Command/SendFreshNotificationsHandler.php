@@ -6,6 +6,7 @@ namespace Shippinno\Notification\Application\Command;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+use Shippinno\Notification\Domain\Model\Notification;
 use Shippinno\Notification\Domain\Model\NotificationIsFreshSpecification;
 use Shippinno\Notification\Domain\Model\NotificationRepository;
 use Shippinno\Notification\Domain\Model\SendNotification as SendNotificationService;
@@ -17,12 +18,12 @@ class SendFreshNotificationsHandler
     /**
      * @var NotificationRepository
      */
-    private $notificationRepository;
+    protected $notificationRepository;
 
     /**
      * @var SendNotificationService
      */
-    private $sendNotificationService;
+    protected $sendNotificationService;
 
     /**
      * @param NotificationRepository $notificationRepository
@@ -56,12 +57,17 @@ class SendFreshNotificationsHandler
         $this->logger->debug(sprintf('Sending %s fresh notifications.', count($notifications)));
         $sent = 0;
         foreach ($notifications as $notification) {
-            $this->sendNotificationService->execute($notification);
-            if ($notification->isSent()) {
-                $sent = $sent + 1;
-            }
-            $this->notificationRepository->persist($notification);
+            $this->send($notification);
         }
         $this->logger->debug(sprintf('Sent %s notifications successfully.', $sent));
+    }
+
+    /**
+     * @param Notification $notification
+     */
+    protected function send(Notification $notification): void
+    {
+        $this->sendNotificationService->execute($notification);
+        $this->notificationRepository->persist($notification);
     }
 }
