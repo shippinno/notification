@@ -58,6 +58,7 @@ class SendFreshNotificationsHandler
         $sent = 0;
         foreach ($notifications as $notification) {
             $this->send($notification);
+            $sent++;
         }
         $this->logger->debug(sprintf('Sent %s notifications successfully.', $sent));
     }
