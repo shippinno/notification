@@ -7,7 +7,7 @@
         "doctrine/orm": "^2.5",
         "tanigami/value-objects": "^0.4.6",
         "shippinno/email": "^1.0.0",
-        "maknz/slack": "^1.7",
+        "alek13/slack": "^1.7",
         "mathiasverraes/classfunctions": "^1.1",
         "adbario/php-dot-notation": "^2.1",
         "tanigami/specification": "^1.3",
