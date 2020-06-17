@@ -13,6 +13,7 @@ use Shippinno\Notification\Domain\Model\EmailDestination;
 use Shippinno\Notification\Domain\Model\Notification;
 use Shippinno\Notification\Domain\Model\NotificationBuilder;
 use Shippinno\Notification\Domain\Model\NotificationIsFailedSpecification;
+use Shippinno\Notification\Domain\Model\NotificationIsLockedSpecification;
 use Shippinno\Notification\Domain\Model\Subject;
 use Shippinno\Notification\Infrastructure\Persistence\Doctrine\Type\NotificationBodyType;
 use Shippinno\Notification\Infrastructure\Persistence\Doctrine\Type\NotificationDeduplicationKeyType;
@@ -173,5 +174,28 @@ class DoctrineNotificationRepositoryTest extends TestCase
         $result = $this->repository->query($specification);
         $this->assertCount(1, $result);
         $this->assertTrue($result[0]->isFailed());
+    }
+
+    public function testRemoveNotifications()
+    {
+        $freshNotification1 = NotificationBuilder::notification()->build();
+        $freshNotification2 = NotificationBuilder::notification()->build();
+        $freshNotification3 = NotificationBuilder::notification()->build();
+        $freshNotification3->lock();
+        $specification = new NotificationIsLockedSpecification;
+        $this->repository->add($freshNotification1);
+        $this->repository->add($freshNotification2);
+        $this->repository->add($freshNotification3);
+        $this->assertCount(2, $this->repository->freshNotifications());
+        $this->assertCount(1, $this->repository->query($specification));
+
+        $this->repository->remove($freshNotification3);
+        $this->entityManager->flush();
+        $this->assertCount(2, $this->repository->freshNotifications());
+        $this->assertEmpty($this->repository->query($specification));
+
+        $this->repository->removeAll([$freshNotification1, $freshNotification2]);
+        $this->entityManager->flush();
+        $this->assertEmpty($this->repository->freshNotifications());
     }
 }

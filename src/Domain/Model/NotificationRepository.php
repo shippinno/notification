@@ -43,4 +43,14 @@ interface NotificationRepository
         int $maxResults = null,
         int $firstResult = null
     ): array;
+
+    /**
+     * @param Notification $notification
+     */
+    public function remove(Notification $notification): void;
+
+    /**
+     * @param Notification[] $notifications
+     */
+    public function removeAll(array $notifications): void;
 }

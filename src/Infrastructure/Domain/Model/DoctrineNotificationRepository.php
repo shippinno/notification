@@ -114,4 +114,24 @@ class DoctrineNotificationRepository extends EntityRepository implements Notific
 
         return $queryBuilder->getQuery()->getResult();
     }
+
+    /**
+     * {@inheritdoc}
+     * @throws ORMException
+     */
+    public function remove(Notification $notification): void
+    {
+        $this->getEntityManager()->remove($notification);
+    }
+
+    /**
+     * {@inheritdoc}
+     * @throws ORMException
+     */
+    public function removeAll(array $notifications): void
+    {
+        foreach ($notifications as $notification) {
+            $this->remove($notification);
+        }
+    }
 }
