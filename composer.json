@@ -2,16 +2,17 @@
     "name": "shippinno/notification",
     "type": "library",
     "require": {
+        "php": "^7.4",
         "ext-json": "*",
-        "shippinno/template": "^1.0",
-        "doctrine/orm": "^2.5",
-        "tanigami/value-objects": "^0.4.6",
-        "shippinno/email": "^1.0.0",
-        "maknz/slack": "^1.7",
-        "mathiasverraes/classfunctions": "^1.1",
         "adbario/php-dot-notation": "^2.1",
+        "alek13/slack": "^2.2",
+        "doctrine/orm": "^2.5",
+        "mathiasverraes/classfunctions": "^1.1",
+        "shippinno/email": "^1.0.0",
+        "shippinno/template": "^1.0",
+        "tanigami/doctrine-json-unescaped-type": "^1.0",
         "tanigami/specification": "^1.3",
-        "tanigami/doctrine-json-unescaped-type": "^1.0"
+        "tanigami/value-objects": "^0.4.6"
     },
     "require-dev": {
         "phpunit/phpunit": "^7.4",
@@ -28,5 +29,8 @@
         "psr-4": {
             "Shippinno\\Notification\\": "tests/"
         }
+    },
+    "config": {
+        "sort-packages": true
     }
 }
