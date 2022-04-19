@@ -36,14 +36,14 @@ class SlackGateway extends Gateway
         $destination = $notification->destination();
         $text = $notification->subject()->subject()."\n\n";
         $text .= $notification->body()->body();
-        $message = new Message($this->client);
+        $message = new Message();
         $message->setAllowMarkdown(true);
         $message->setText($text);
         if ($destination instanceof SlackChannelDestination) {
             $message->setChannel($destination->channel());
         }
         try {
-            $message->send();
+            $this->client->send($message);
         } catch (Throwable $e) {
             throw new NotificationNotSentException($notification, $e);
         }
