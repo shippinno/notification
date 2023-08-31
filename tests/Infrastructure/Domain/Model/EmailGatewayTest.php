@@ -2,6 +2,7 @@
 
 namespace Shippinno\Notification\Infrastructure\Domain\Model;
 
+use InvalidArgumentException;
 use Mockery;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\TestCase;
@@ -12,6 +13,7 @@ use Shippinno\Notification\Domain\Model\Body;
 use Shippinno\Notification\Domain\Model\Destination;
 use Shippinno\Notification\Domain\Model\EmailDestination;
 use Shippinno\Notification\Domain\Model\Notification;
+use Shippinno\Notification\Domain\Model\NotificationNotSentException;
 use Shippinno\Notification\Domain\Model\Subject;
 use Tanigami\ValueObjects\Web\Email;
 use Tanigami\ValueObjects\Web\EmailAddress;
@@ -64,6 +66,7 @@ class EmailGatewayTest extends TestCase
             Mockery::mock(SendEmail::class),
             new EmailAddress('from@example.com')
         );
+        $this->expectException(InvalidArgumentException::class);
         $gateway->send($notification);
     }
 
@@ -81,6 +84,7 @@ class EmailGatewayTest extends TestCase
             new Body('body')
         );
         $sendEmail = Mockery::mock(SendEmail::class);
+        $this->expectException(NotificationNotSentException::class);
         $sendEmail->shouldReceive('execute')->andThrow(new EmailNotSentException());
         $gateway = new EmailGateway($sendEmail, new EmailAddress('from@example.com'));
         $gateway->send($notification);

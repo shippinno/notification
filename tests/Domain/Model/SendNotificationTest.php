@@ -26,7 +26,7 @@ class SendNotificationTest extends TestCase
         $service = new SendNotification($gatewayRegistry);
         $service->execute($notification);
         $this->assertTrue($notification->isFailed());
-        $this->assertContains('Gateway not found', $notification->failedFor());
+        $this->assertStringContainsString('Gateway not found', $notification->failedFor());
     }
 
     public function testItFailsIfGatewayFailsToSendNotification()
@@ -42,6 +42,6 @@ class SendNotificationTest extends TestCase
         $service = new SendNotification($gatewayRegistry);
         $service->execute($notification);
         $this->assertTrue($notification->isFailed());
-        $this->assertContains('Gateway failed to send', $notification->failedFor());
+        $this->assertStringContainsString('Gateway failed to send', $notification->failedFor());
     }
 }
