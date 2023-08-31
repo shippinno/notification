@@ -28,7 +28,7 @@ class SlackGatewayTest extends TestCase
         $gateway = new SlackGateway($client);
         $gateway->send($notification);
         $client
-            ->shouldHaveReceived('sendMessage')
+            ->shouldHaveReceived('send')
             ->once()
             ->with(Mockery::on(function (Message $message) {
                 return

@@ -5,6 +5,7 @@ namespace Shippinno\Notification\Application\Query;
 use PHPUnit\Framework\TestCase;
 use Shippinno\Notification\Application\DataTransformer\NotificationDtoDataTransformer;
 use Shippinno\Notification\Domain\Model\NotificationBuilder;
+use Shippinno\Notification\Domain\Model\NotificationNotFoundException;
 use Shippinno\Notification\Infrastructure\Domain\Model\InMemoryNotificationRepository;
 
 class FetchNotificationHandlerTest extends TestCase
@@ -32,6 +33,7 @@ class FetchNotificationHandlerTest extends TestCase
             new InMemoryNotificationRepository,
             new NotificationDtoDataTransformer
         );
+        $this->expectException(NotificationNotFoundException::class);
         $handler->handle(new FetchNotification(1));
     }
 }

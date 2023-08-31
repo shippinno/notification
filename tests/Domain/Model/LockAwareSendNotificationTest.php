@@ -25,6 +25,7 @@ class LockAwareSendNotificationTest extends TestCase
             $gatewayRegistry,
             new InMemoryNotificationRepository
         );
+        $this->expectException(NotificationLockedException::class);
         $service->execute($notification);
     }
 
