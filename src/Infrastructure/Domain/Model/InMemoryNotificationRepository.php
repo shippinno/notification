@@ -103,4 +103,22 @@ class InMemoryNotificationRepository implements NotificationRepository
     {
         return new NotificationId($this->nextIdentity++);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function remove(Notification $notification): void
+    {
+        unset($this->notifications[$notification->notificationId()->id()]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function removeAll(array $notifications): void
+    {
+        foreach ($notifications as $notification) {
+            $this->remove($notification);
+        }
+    }
 }
