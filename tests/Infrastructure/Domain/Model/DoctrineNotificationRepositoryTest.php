@@ -30,7 +30,7 @@ class DoctrineNotificationRepositoryTest extends TestCase
     /** @var EntityManager $entityManager */
     private $entityManager;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->addCustomTypes();
         $this->entityManager = $this->initEntityManager();

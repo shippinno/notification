@@ -27,7 +27,7 @@ class SendFreshNotificationsHandlerTest extends TestCase
     /** @var SendFreshNotificationsHandler */
     private $handler;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->gatewayRegistry = new GatewayRegistry;
         $this->notificationRepository = new InMemoryNotificationRepository;

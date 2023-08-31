@@ -9,6 +9,7 @@ use Shippinno\Notification\Domain\Model\Gateway;
 use Shippinno\Notification\Domain\Model\GatewayRegistry;
 use Shippinno\Notification\Domain\Model\Notification;
 use Shippinno\Notification\Domain\Model\NotificationBuilder;
+use Shippinno\Notification\Domain\Model\NotificationNotFoundException;
 use Shippinno\Notification\Domain\Model\NotificationRepository;
 use Shippinno\Notification\Domain\Model\SendNotification as SendNotificationService;
 use Shippinno\Notification\Infrastructure\Domain\Model\InMemoryNotificationRepository;
@@ -26,7 +27,7 @@ class SendNotificationHandlerTest extends TestCase
     /** @var SendNotificationHandler */
     private $handler;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->gatewayRegistry = new GatewayRegistry;
         $this->notificationRepository = new InMemoryNotificationRepository;
@@ -59,6 +60,7 @@ class SendNotificationHandlerTest extends TestCase
      */
     public function testItThrowsExceptionIfNotificationDoesNotExist()
     {
+        $this->expectException(NotificationNotFoundException::class);
         $this->handler->handle(new SendNotification(123));
     }
 }
