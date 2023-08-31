@@ -8,6 +8,7 @@ use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\ORM\Tools\Setup;
 use PHPUnit\Framework\TestCase;
 use Shippinno\Notification\Domain\Model\Body;
+use Shippinno\Notification\Domain\Model\DeduplicationException;
 use Shippinno\Notification\Domain\Model\DeduplicationKey;
 use Shippinno\Notification\Domain\Model\EmailDestination;
 use Shippinno\Notification\Domain\Model\Notification;
@@ -125,6 +126,7 @@ class DoctrineNotificationRepositoryTest extends TestCase
         );
         $this->repository->add($notification1);
         $this->assertTrue($this->repository->hasNotificationOfDeduplicationKey($deduplicationKey));
+        $this->expectException(DeduplicationException::class);
         $this->repository->add($notification2);
     }
 
