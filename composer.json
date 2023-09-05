@@ -11,9 +11,9 @@
     "require": {
         "php": "^8.2",
         "ext-json": "*",
-        "adbario/php-dot-notation": "^3.0.0",
+        "adbario/php-dot-notation": "^2.1",
         "alek13/slack": "^2.2",
-        "doctrine/orm": "^2.16",
+        "doctrine/orm": "^2.5",
         "mathiasverraes/classfunctions": "^1.1",
         "shippinno/email": "dev-feature/php-version-up",
         "shippinno/template": "^1.0",
