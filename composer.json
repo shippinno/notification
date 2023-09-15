@@ -1,6 +1,13 @@
 {
     "name": "shippinno/notification",
     "type": "library",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "git@github.com:shippinno/email.git",
+            "no-api": true
+        }
+    ],
     "require": {
         "php": "^7.4",
         "ext-json": "*",
@@ -8,7 +15,7 @@
         "alek13/slack": "^2.2",
         "doctrine/orm": "^2.5",
         "mathiasverraes/classfunctions": "^1.1",
-        "shippinno/email": "^1.0.0",
+        "shippinno/email": "dev-feature/php-version-up",
         "shippinno/template": "^1.0",
         "tanigami/doctrine-json-unescaped-type": "^1.0",
         "tanigami/specification": "^1.3",
