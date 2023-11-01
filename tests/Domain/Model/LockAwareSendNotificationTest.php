@@ -12,7 +12,7 @@ class LockAwareSendNotificationTest extends TestCase
     use MockeryPHPUnitIntegration;
 
     /**
-     * @expectedException \Shippinno\Notification\Domain\Model\NotificationLockedException
+     * @expectException \Shippinno\Notification\Domain\Model\NotificationLockedException
      */
     public function testItThrowsExceptionIfNotificationIsLocked()
     {

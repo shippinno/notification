@@ -55,7 +55,7 @@ class SendNotificationHandlerTest extends TestCase
     }
 
     /**
-     * @expectedException \Shippinno\Notification\Domain\Model\NotificationNotFoundException
+     * @expectException \Shippinno\Notification\Domain\Model\NotificationNotFoundException
      * @expectedExceptionMessage Notification (123) does not exist.
      */
     public function testItThrowsExceptionIfNotificationDoesNotExist()

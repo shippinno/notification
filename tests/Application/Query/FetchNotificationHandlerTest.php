@@ -25,7 +25,7 @@ class FetchNotificationHandlerTest extends TestCase
     }
 
     /**
-     * @expectedException \Shippinno\Notification\Domain\Model\NotificationNotFoundException
+     * @expectException \Shippinno\Notification\Domain\Model\NotificationNotFoundException
      */
     public function testItThrowsExceptionIfNotificationNotFound()
     {

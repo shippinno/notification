@@ -3,6 +3,7 @@
 namespace Shippinno\Notification\Domain\Model;
 
 use League\Flysystem\Filesystem;
+use League\Flysystem\InMemory\InMemoryFilesystemAdapter;
 use League\Flysystem\Memory\MemoryAdapter;
 use PHPUnit\Framework\TestCase;
 use Shippinno\Template\Liquid;
@@ -12,7 +13,7 @@ class TemplateNotificationFactoryTest extends TestCase
 {
     public function testItCreatesNotificationFromTemplate()
     {
-        $filesystem = new Filesystem(new MemoryAdapter);
+        $filesystem = new Filesystem(new InMemoryFilesystemAdapter);
         $filesystem->write('SomeNotification__subject.liquid', 'Hello {{ you }} !!');
         $filesystem->write('SomeNotification__body.liquid', 'Good bye {{ her }} :)');
         $template = new Liquid($filesystem);

@@ -54,7 +54,7 @@ class EmailGatewayTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectException \InvalidArgumentException
      * @expectedExceptionMessage Invalid destination type: INVALID_TYPE
      */
     public function testItThrowsExceptionIfDestinationTypeIsInvalid()
@@ -71,7 +71,7 @@ class EmailGatewayTest extends TestCase
     }
 
     /**
-     * @expectedException \Shippinno\Notification\Domain\Model\NotificationNotSentException
+     * @expectException \Shippinno\Notification\Domain\Model\NotificationNotSentException
      * @expectedExceptionMessage SUBJECT
      */
     public function testItThrowsExceptionIfNotificationWasNotSent()
