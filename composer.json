@@ -16,6 +16,11 @@
             "type": "vcs",
             "url": "git@github.com:shippinno/template-php.git",
             "no-api": true
+        },
+        {
+            "type": "vcs",
+            "url": "git@github.com:shippinno/value-objects-php.git",
+            "no-api": true
         }
     ],
     "require": {
@@ -29,7 +34,7 @@
         "shippinno/template": "dev-feature/php-version-up",
         "tanigami/doctrine-json-unescaped-type": "dev-php-version-up",
         "tanigami/specification": "^1.3",
-        "tanigami/value-objects": "^0.4.6",
+        "tanigami/value-objects": "dev-develop",
         "symfony/cache": "^5.3"
     },
     "require-dev": {
